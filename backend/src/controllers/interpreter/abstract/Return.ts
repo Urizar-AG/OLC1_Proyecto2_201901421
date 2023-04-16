@@ -20,6 +20,22 @@ export enum ArithmeticOperator {
     NEGATIVO = 6,
 }
 
+/* Tipo de operación relacional */
+export enum RelationalOperator {
+    IGUAL = 0,
+    NOIGUAL = 1,
+    MENOR = 2,
+    MENORIGUAL = 3,
+    MAYOR = 4,
+    MAYORIGUAL = 5,
+}
+
+/* Tipo de operación relacional */
+export enum LogicalOperator {
+    OR = 0,
+    AND = 1,
+    NOT = 2,
+}
 
 export type Return = {
     value: any,

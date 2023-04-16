@@ -17,10 +17,10 @@
 //Operadores relacionales   
 "=="                return "Igual";   
 "!="                return "NoIgual";   
-"<"                 return "Menor";   
 "<="                return "MenorIgual";   
-">"                 return "Mayor";   
 ">="                return "MayorIgual";
+"<"                 return "Menor";   
+">"                 return "Mayor";   
 //Operadores lógicos
 "||"                return "Or";   
 "&&"                return "And";   
@@ -90,8 +90,10 @@
 %{
     const { Print } = require('../instruccions/Print');
     const { Primitive } = require('../expressions/Primitive');
-    const { Type, ArithmeticOperator } = require('../abstract/Return');
-    const { ArithmeticOperation } = require('../expressions/ArithmeticOPeration');
+    const { Type, ArithmeticOperator, RelationalOperator, LogicalOperator } = require('../abstract/Return');
+    const { ArithmeticOperation } = require('../expressions/ArithmeticOperation');
+    const { RelationalOperation } = require('../expressions/RelationalOperation');
+    const { LogicalOperation } = require('../expressions/LogicalOperation');
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -153,6 +155,18 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre { $$ = $2; }
     | EXPRESION Potencia EXPRESION {$$ = new ArithmeticOperation(@1.first_line, @1.first_column+1, $1, $3, ArithmeticOperator.POTENCIA); }
     | EXPRESION Modulo EXPRESION {$$ = new ArithmeticOperation(@1.first_line, @1.first_column+1, $1, $3, ArithmeticOperator.MODULO); }
     | Resta EXPRESION %prec UNegacion {$$ = new ArithmeticOperation(@1.first_line, @1.first_column+1, $2, $2, ArithmeticOperator.NEGATIVO); }
+    
+    | EXPRESION Igual EXPRESION { $$ = new RelationalOperation(@1.first_line, @1.first_column+1, $1, $3, RelationalOperator.IGUAL); }
+    | EXPRESION NoIgual EXPRESION { $$ = new RelationalOperation(@1.first_line, @1.first_column+1, $1, $3, RelationalOperator.NOIGUAL); }
+    | EXPRESION Menor EXPRESION { $$ = new RelationalOperation(@1.first_line, @1.first_column+1, $1, $3, RelationalOperator.MENOR); }
+    | EXPRESION MenorIgual EXPRESION { $$ = new RelationalOperation(@1.first_line, @1.first_column+1, $1, $3, RelationalOperator.MENORIGUAL); }
+    | EXPRESION Mayor EXPRESION { $$ = new RelationalOperation(@1.first_line, @1.first_column+1, $1, $3, RelationalOperator.MAYOR); }
+    | EXPRESION MayorIgual EXPRESION { $$ = new RelationalOperation(@1.first_line, @1.first_column+1, $1, $3, RelationalOperator.MAYORIGUAL); }
+
+    | EXPRESION Or EXPRESION { $$ = new LogicalOperation(@1.first_line, @1.first_column+1, $1, $3, LogicalOperator.OR );}
+    | EXPRESION And EXPRESION { $$ = new LogicalOperation(@1.first_line, @1.first_column+1, $1, $3, LogicalOperator.AND );}
+    | Not EXPRESION { $$ = new LogicalOperation(@1.first_line, @1.first_column+1, $2, $2, LogicalOperator.NOT );}
+
     | Entero {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.INT);}
     | Decimal { $$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.DOUBLE);}
     | Caracter {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.CHAR);}
