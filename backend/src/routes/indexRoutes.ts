@@ -1,0 +1,10 @@
+import express from 'express';
+import { indexController } from '../controllers/indexController';
+
+const router = express.Router();
+
+router.get('/test', indexController.test);
+
+router.post('/interpretar', indexController.interpretar);
+
+export default router;
