@@ -96,6 +96,7 @@
     const { LogicalOperation } = require('../expressions/LogicalOperation');
     const { VariableDeclaration }  = require('../instruccions/VariableDeclaration');
     const { Access } = require('../expressions/Access');
+    const { Assignment } = require('../instruccions/Assignment');
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -141,6 +142,10 @@ INSTRUCCION: DECLARACIONVARIABLE
     {
         $$ = $1; 
     }
+    | ASIGNACIONVARIABLE
+    {
+        $$ = $1;
+    }
     | FPRINT
     {
         $$ = $1;
@@ -154,6 +159,12 @@ DECLARACIONVARIABLE: TIPO Id Asignacion EXPRESION PuntoComa
     | TIPO Id PuntoComa
     {
         $$ = new VariableDeclaration(@1.first_line, @1.first_column+1, $2, null, $1);
+    }
+;
+
+ASIGNACIONVARIABLE: Id Asignacion EXPRESION PuntoComa
+    {
+        $$ = new Assignment(@1.first_line, @1.first_column+1, $1, $3);
     }
 ;
 

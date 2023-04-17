@@ -37,4 +37,24 @@ export class Environment {
         //No encontró la variable en ningun entorno
         return null;
     }
+
+    //Actualiza el valor de una variable
+    public updateVariable(id: string, value:any) {
+        let env: Environment | null = this;
+        //Buscando la variable en los entornos
+        while (env != null) {
+            if (env.variables.has(id)) {
+                //La variable existe en el entorno, se asignar el valor                
+                let variable = env.variables.get(id);
+                if (variable == null) {
+                    console.log("Error Semántico, la variable no existe");
+                    return;
+                }else {
+                    variable.value =  value;
+                    return;
+                }
+            }
+            env = env.prev;
+        }
+    }
 }
