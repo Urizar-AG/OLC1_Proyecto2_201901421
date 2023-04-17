@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Environment } from "./interpreter/abstract/Environment";
 
 class IndexCrontroller {
 
@@ -12,8 +13,9 @@ class IndexCrontroller {
             let parser = require("./interpreter/grammar/grammar");
             let code = req.body.code;
             const ast = parser.parse(code);
+            const globalEnvironment = new Environment(null);
             for(const inst of ast) {
-                inst.execute();
+                inst.execute(globalEnvironment);
             }
             res.json({
                 consola: 'Ejecutado con éxito',

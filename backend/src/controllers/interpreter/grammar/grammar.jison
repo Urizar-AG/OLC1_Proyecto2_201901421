@@ -94,6 +94,8 @@
     const { ArithmeticOperation } = require('../expressions/ArithmeticOperation');
     const { RelationalOperation } = require('../expressions/RelationalOperation');
     const { LogicalOperation } = require('../expressions/LogicalOperation');
+    const { VariableDeclaration }  = require('../instruccions/VariableDeclaration');
+    const { Access } = require('../expressions/Access');
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -135,9 +137,23 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION
     }
 ;
 
-INSTRUCCION: FPRINT
+INSTRUCCION: DECLARACIONVARIABLE 
+    {
+        $$ = $1; 
+    }
+    | FPRINT
     {
         $$ = $1;
+    }
+;
+
+DECLARACIONVARIABLE: TIPO Id Asignacion EXPRESION PuntoComa
+    {
+        $$ = new VariableDeclaration(@1.first_line, @1.first_column+1, $2, $4, $1);
+    }
+    | TIPO Id PuntoComa
+    {
+        $$ = new VariableDeclaration(@1.first_line, @1.first_column+1, $2, null, $1);
     }
 ;
 
@@ -167,10 +183,18 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre { $$ = $2; }
     | EXPRESION And EXPRESION { $$ = new LogicalOperation(@1.first_line, @1.first_column+1, $1, $3, LogicalOperator.AND );}
     | Not EXPRESION { $$ = new LogicalOperation(@1.first_line, @1.first_column+1, $2, $2, LogicalOperator.NOT );}
 
+    | Id { $$ = new Access(@1.first_line, @1.first_column+1, $1); }
     | Entero {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.INT);}
     | Decimal { $$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.DOUBLE);}
     | Caracter {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.CHAR);}
     | Cadena {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.STRING);}
     | True {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.BOOLEAN);}
     | False {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.BOOLEAN);}
+;
+
+TIPO: Int { $$ = Type.INT }
+    | Double { $$ = Type.DOUBLE }
+    | Char { $$ = Type.CHAR }
+    | String { $$ = Type.STRING }
+    | Boolean { $$ = Type.BOOLEAN }
 ;

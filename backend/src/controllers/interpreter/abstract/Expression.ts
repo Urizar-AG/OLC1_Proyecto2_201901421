@@ -1,4 +1,5 @@
 import { Return } from "./Return";
+import { Environment } from "./Environment";
 
 export abstract class Expression {
     public line: number;
@@ -9,5 +10,5 @@ export abstract class Expression {
         this.column = column;
     }
 
-    public abstract execute(): Return;
+    public abstract execute(env:Environment): Return;
 }

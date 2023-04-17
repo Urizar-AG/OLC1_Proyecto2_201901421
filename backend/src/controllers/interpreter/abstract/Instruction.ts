@@ -1,3 +1,5 @@
+import { Environment } from "./Environment";
+
 export abstract class Instruction {
     public line: number;
     public column: number;
@@ -7,5 +9,5 @@ export abstract class Instruction {
         this.column = column;
     }
 
-    public abstract execute():any;
+    public abstract execute(env:Environment):any;
 }

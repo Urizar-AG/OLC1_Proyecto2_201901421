@@ -1,3 +1,4 @@
+import { Environment } from "../abstract/Environment";
 import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 
@@ -9,8 +10,8 @@ export class Print extends Instruction {
         this.expression = expression;
     }
 
-    public execute(): void {
-        const value = this.expression.execute();
+    public execute(env: Environment): void {
+        const value = this.expression.execute(env);
         console.log(value.value)
     }
 }

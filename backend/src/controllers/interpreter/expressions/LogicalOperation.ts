@@ -1,3 +1,4 @@
+import { Environment } from "../abstract/Environment";
 import { Expression } from "../abstract/Expression";
 import { LogicalOperator, Return, Type } from "../abstract/Return";
 
@@ -13,10 +14,10 @@ export class LogicalOperation extends Expression {
         this.operationType = operationType;
     }
 
-    public execute(): Return {
+    public execute(env:Environment): Return {
         let resultado: Return;
-        let opr1 = this.operando1.execute();
-        let opr2 = this.operando2.execute();
+        let opr1 = this.operando1.execute(env);
+        let opr2 = this.operando2.execute(env);
         switch (this.operationType) {
             case LogicalOperator.OR:
                 return resultado = this.or(opr1, opr2);
