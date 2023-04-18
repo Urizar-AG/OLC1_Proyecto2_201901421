@@ -57,6 +57,7 @@
 "false"             return "False";
 "if"                return "If";
 "else"              return "Else";
+"while"             return "While";
 "print"             return "Print";
 "main"              return "Main";
 
@@ -100,6 +101,7 @@
     const { Access } = require('../expressions/Access');
     const { Assignment } = require('../instruccions/Assignment');
     const { If } = require('../instruccions/If');
+    const { While } = require('../instruccions/While');
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -153,6 +155,10 @@ INSTRUCCION: DECLARACIONVARIABLE
     {
         $$ = $1;
     }
+    | WHILE
+    {
+        $$ = $1;
+    }
     | FPRINT
     {
         $$ = $1;
@@ -186,6 +192,12 @@ IF: If ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES
     | If ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre
     {
         $$ = new If(@1.first_line, @1.first_column+1, $3, $6, null);
+    }
+;
+
+WHILE: While ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre
+    {
+        $$ = new While(@1.first_line, @1.first_column, $3, $6);
     }
 ;
 
