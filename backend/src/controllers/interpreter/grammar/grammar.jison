@@ -55,6 +55,8 @@
 
 "true"              return "True";
 "false"             return "False";
+"if"                return "If";
+"else"              return "Else";
 "print"             return "Print";
 "main"              return "Main";
 
@@ -97,6 +99,7 @@
     const { VariableDeclaration }  = require('../instruccions/VariableDeclaration');
     const { Access } = require('../expressions/Access');
     const { Assignment } = require('../instruccions/Assignment');
+    const { If } = require('../instruccions/If');
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -146,6 +149,10 @@ INSTRUCCION: DECLARACIONVARIABLE
     {
         $$ = $1;
     }
+    | IF
+    {
+        $$ = $1;
+    }
     | FPRINT
     {
         $$ = $1;
@@ -165,6 +172,20 @@ DECLARACIONVARIABLE: TIPO Id Asignacion EXPRESION PuntoComa
 ASIGNACIONVARIABLE: Id Asignacion EXPRESION PuntoComa
     {
         $$ = new Assignment(@1.first_line, @1.first_column+1, $1, $3);
+    }
+;
+
+IF: If ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre Else LlaveApertura INSTRUCCIONES LlaveCierre
+    {
+        $$ = new If(@1.first_line, @1.first_column+1, $3, $6, $10);
+    }
+    | If ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre Else IF
+    {
+        $$ = new If(@1.first_line, @1.first_column+1, $3, $6, $9);
+    }
+    | If ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre
+    {
+        $$ = new If(@1.first_line, @1.first_column+1, $3, $6, null);
     }
 ;
 
