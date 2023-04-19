@@ -7,6 +7,9 @@
 %%
 
 /* =============== SÍMBOLOS RESERVADOS =============== */
+//Operadores incremento y decremento
+"++"                return "Incremento";
+"--"                return "Decremento";
 //Operadores aritméticos
 "+"                 return "Suma";
 "-"                 return "Resta";   
@@ -25,9 +28,9 @@
 "||"                return "Or";   
 "&&"                return "And";   
 "!"                 return "Not";
-//Operadores incremento y decremento
-"++"                return "Incremento";
-"--"                return "Decremento";
+// //Operadores incremento y decremento
+// "++"                return "Incremento";
+// "--"                return "Decremento";
 //Operador ternario
 "?"                 return "Ternario";   
 //OPerador de asignación
@@ -100,6 +103,7 @@
     const { VariableDeclaration }  = require('../instruccions/VariableDeclaration');
     const { Access } = require('../expressions/Access');
     const { Assignment } = require('../instruccions/Assignment');
+    const { IncrementDecrement } = require('../expressions/IncrementDecrement');
     const { If } = require('../instruccions/If');
     const { While } = require('../instruccions/While');
 %}
@@ -151,6 +155,14 @@ INSTRUCCION: DECLARACIONVARIABLE
     {
         $$ = $1;
     }
+    | INCREMENTARVARIABLE
+    {
+        $$ = $1;
+    }
+    | DECREMENTARVARIABLE
+    {
+        $$ = $1;
+    }
     | IF
     {
         $$ = $1;
@@ -181,6 +193,18 @@ ASIGNACIONVARIABLE: Id Asignacion EXPRESION PuntoComa
     }
 ;
 
+INCREMENTARVARIABLE: Id Incremento PuntoComa
+    {
+        $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2);
+    }
+;
+
+DECREMENTARVARIABLE: Id Decremento PuntoComa
+    {
+        $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2);
+    }
+;
+
 IF: If ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre Else LlaveApertura INSTRUCCIONES LlaveCierre
     {
         $$ = new If(@1.first_line, @1.first_column+1, $3, $6, $10);
@@ -197,7 +221,7 @@ IF: If ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES
 
 WHILE: While ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre
     {
-        $$ = new While(@1.first_line, @1.first_column, $3, $6);
+        $$ = new While(@1.first_line, @1.first_column+1, $3, $6);
     }
 ;
 
@@ -226,6 +250,9 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre { $$ = $2; }
     | EXPRESION Or EXPRESION { $$ = new LogicalOperation(@1.first_line, @1.first_column+1, $1, $3, LogicalOperator.OR );}
     | EXPRESION And EXPRESION { $$ = new LogicalOperation(@1.first_line, @1.first_column+1, $1, $3, LogicalOperator.AND );}
     | Not EXPRESION { $$ = new LogicalOperation(@1.first_line, @1.first_column+1, $2, $2, LogicalOperator.NOT );}
+
+    | Id Incremento { $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2); }
+    | Id Decremento { $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2); }
 
     | Id { $$ = new Access(@1.first_line, @1.first_column+1, $1); }
     | Entero {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.INT);}
