@@ -62,6 +62,7 @@
 "else"              return "Else";
 "while"             return "While";
 "for"               return "For";
+"do"                return "Do";
 "print"             return "Print";
 "main"              return "Main";
 
@@ -108,6 +109,7 @@
     const { If } = require('../instruccions/If');
     const { While } = require('../instruccions/While');
     const { For } = require('../instruccions/For');
+    const { DoWhile } = require('../instruccions/DoWhile')
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -174,6 +176,10 @@ INSTRUCCION: DECLARACIONVARIABLE
         $$ = $1;
     }
     | FOR 
+    {
+        $$ = $1;
+    }
+    | DOWHILE
     {
         $$ = $1;
     }
@@ -244,6 +250,12 @@ INDICEFOR: DECLARACIONVARIABLE  { $$ = $1; }
 ACTUALIZACIONFOR: Id Asignacion EXPRESION { $$ = new Assignment(@1.first_line, @1.first_column+1, $1, $3); }
     | Id Incremento { $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2); }
     | Id Decremento { $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2); }
+;
+
+DOWHILE: Do LlaveApertura INSTRUCCIONES LlaveCierre While ParentesisApertura EXPRESION ParentesisCierre PuntoComa
+    {
+        $$ = new DoWhile(@1.first_line, @1.first_column+1, $3, $7);
+    }
 ;
 
 FPRINT: Print ParentesisApertura EXPRESION ParentesisCierre PuntoComa
