@@ -61,6 +61,7 @@
 "if"                return "If";
 "else"              return "Else";
 "while"             return "While";
+"for"               return "For";
 "print"             return "Print";
 "main"              return "Main";
 
@@ -106,6 +107,7 @@
     const { IncrementDecrement } = require('../expressions/IncrementDecrement');
     const { If } = require('../instruccions/If');
     const { While } = require('../instruccions/While');
+    const { For } = require('../instruccions/For');
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -171,6 +173,10 @@ INSTRUCCION: DECLARACIONVARIABLE
     {
         $$ = $1;
     }
+    | FOR 
+    {
+        $$ = $1;
+    }
     | FPRINT
     {
         $$ = $1;
@@ -223,6 +229,21 @@ WHILE: While ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUC
     {
         $$ = new While(@1.first_line, @1.first_column+1, $3, $6);
     }
+;
+
+FOR: For ParentesisApertura INDICEFOR EXPRESION PuntoComa ACTUALIZACIONFOR ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre
+    {
+        $$ = new For(@1.first_line, @1.first_column+1, $3, $4, $6, $9);
+    }
+;
+
+INDICEFOR: DECLARACIONVARIABLE  { $$ = $1; }
+    | ASIGNACIONVARIABLE { $$ = $1; }
+;
+
+ACTUALIZACIONFOR: Id Asignacion EXPRESION { $$ = new Assignment(@1.first_line, @1.first_column+1, $1, $3); }
+    | Id Incremento { $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2); }
+    | Id Decremento { $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2); }
 ;
 
 FPRINT: Print ParentesisApertura EXPRESION ParentesisCierre PuntoComa
