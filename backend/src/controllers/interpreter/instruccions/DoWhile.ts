@@ -2,6 +2,7 @@ import { Environment } from "../abstract/Environment";
 import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
+import { Break } from "./Break";
 
 //Clase para la sentencia cíclica Do-While
 export class DoWhile extends Instruction {
@@ -18,13 +19,20 @@ export class DoWhile extends Instruction {
         if (c.type !== Type.NULL) {
             do {
                 let newEnv = new Environment(env);
+                let resultado;
                 for (const i of this.statements) {
-                    i.execute(newEnv);
+                    resultado = i.execute(newEnv);
+                    if(resultado instanceof Break) {
+                        return;
+                    }
+                    if (i instanceof Break) {
+                        return;
+                    }
                 }
                 c = this.condition.execute(newEnv);
             } while (c.value);
         }else {
-            console.log('Error Semántico, la condición de la instrucción do-while debe ser boolena');
+            console.log('Error Semántico, la condición de la instrucción do-while debe ser boolean');
         }
 
     }

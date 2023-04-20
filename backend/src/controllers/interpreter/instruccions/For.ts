@@ -2,6 +2,7 @@ import { Environment } from "../abstract/Environment";
 import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
+import { Break } from "./Break";
 
 
 //Clase para la sentencia cíclica For
@@ -26,8 +27,16 @@ export class For extends Instruction {
             if (condition.type !== Type.NULL) {
                 while (condition.value) {
                     let newEnv2 = new Environment(newEnv);
+                    let resultado;
                     for(const i of this.statements) {
-                        i.execute(newEnv2);
+                        resultado = i.execute(newEnv2);
+                        //La instrucción es un break;
+                        if(resultado instanceof Break) {
+                            return;
+                        }
+                        if (i instanceof Break) {
+                            return;
+                        }
                     }
                     this.actualizacionIndice.execute(newEnv);
                     condition = this.condicion.execute(newEnv);

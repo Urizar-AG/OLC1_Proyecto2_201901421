@@ -2,6 +2,7 @@ import { Environment } from "../abstract/Environment";
 import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
+import { Break } from "./Break";
 
 //Clase para la sentencia cíclica While
 export class While extends Instruction {
@@ -21,8 +22,16 @@ export class While extends Instruction {
         
         while (condicion.value) {
             let newEnvironment = new Environment(env);
+            let resultado;
             for (const i of this.statements) {
-                i.execute(newEnvironment);
+                resultado = i.execute(newEnvironment);
+                //La instrucción es un break
+                if(resultado instanceof Break) {
+                    return;
+                }
+                if (i instanceof Break) {
+                    return;
+                }
             }
             // this.statement.execute(newEnvironment);
             condicion = this.condition.execute(newEnvironment); //Actualiza el estado de la condición

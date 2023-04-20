@@ -28,12 +28,9 @@
 "||"                return "Or";   
 "&&"                return "And";   
 "!"                 return "Not";
-// //Operadores incremento y decremento
-// "++"                return "Incremento";
-// "--"                return "Decremento";
 //Operador ternario
 "?"                 return "Ternario";   
-//OPerador de asignación
+//Operador de asignación
 "="                 return "Asignacion";
 //Símbolos
 "("                 return "ParentesisApertura";
@@ -63,6 +60,7 @@
 "while"             return "While";
 "for"               return "For";
 "do"                return "Do";
+"break"             return "Break";
 "print"             return "Print";
 "main"              return "Main";
 
@@ -109,7 +107,8 @@
     const { If } = require('../instruccions/If');
     const { While } = require('../instruccions/While');
     const { For } = require('../instruccions/For');
-    const { DoWhile } = require('../instruccions/DoWhile')
+    const { DoWhile } = require('../instruccions/DoWhile');
+    const { Break } = require('../instruccions/Break');
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -180,6 +179,10 @@ INSTRUCCION: DECLARACIONVARIABLE
         $$ = $1;
     }
     | DOWHILE
+    {
+        $$ = $1;
+    }
+    | BREAK
     {
         $$ = $1;
     }
@@ -256,6 +259,12 @@ DOWHILE: Do LlaveApertura INSTRUCCIONES LlaveCierre While ParentesisApertura EXP
     {
         $$ = new DoWhile(@1.first_line, @1.first_column+1, $3, $7);
     }
+;
+
+BREAK: Break PuntoComa
+{
+    $$ = new Break(@1.first_line, @1.first_column+1);
+}
 ;
 
 FPRINT: Print ParentesisApertura EXPRESION ParentesisCierre PuntoComa
