@@ -57,6 +57,9 @@
 "false"             return "False";
 "if"                return "If";
 "else"              return "Else";
+"switch"            return "Switch";
+"case"              return "Case";
+"default"           return "Default";
 "while"             return "While";
 "for"               return "For";
 "do"                return "Do";
@@ -109,6 +112,7 @@
     const { For } = require('../instruccions/For');
     const { DoWhile } = require('../instruccions/DoWhile');
     const { Break } = require('../instruccions/Break');
+    const { Switch, Case, DefaultCase } = require('../instruccions/Switch');
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -167,6 +171,10 @@ INSTRUCCION: DECLARACIONVARIABLE
         $$ = $1;
     }
     | IF
+    {
+        $$ = $1;
+    }
+    | SWITCH
     {
         $$ = $1;
     }
@@ -231,6 +239,43 @@ IF: If ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES
     | If ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre
     {
         $$ = new If(@1.first_line, @1.first_column+1, $3, $6, null);
+    }
+;
+
+SWITCH: Switch ParentesisApertura EXPRESION ParentesisCierre LlaveApertura LISTACASE DEFAULTCASE LlaveCierre
+    {
+        $$ = new Switch(@1.first_line, @1.first_column+1, $3, $6, $7);
+    }
+    | Switch ParentesisApertura EXPRESION ParentesisCierre LlaveApertura LISTACASE LlaveCierre
+    {
+        $$ = new Switch(@1.first_line, @1.first_column+1, $3, $6, null);
+    }
+    | Switch ParentesisApertura EXPRESION ParentesisCierre LlaveApertura DEFAULTCASE LlaveCierre
+    {
+        $$ = new Switch(@1.first_line, @1.first_column+1, $3, null, $6);
+    }
+;
+
+LISTACASE: LISTACASE CASE
+    {
+        $1.push($2);
+        $$ = $1;
+    }
+    | CASE
+    {
+        $$ = [$1];
+    }
+;
+
+CASE: Case EXPRESION DosPuntos INSTRUCCIONES 
+    {
+        $$ = new Case(@1.first_line, @1.first_column+1, $2, $4);
+    }
+;
+
+DEFAULTCASE: Default DosPuntos INSTRUCCIONES
+    {
+        $$ = new DefaultCase(@1.first_line, @1.first_column+1, $3);
     }
 ;
 
