@@ -5,8 +5,8 @@ export enum Type {
     CHAR = 2,
     STRING = 3,
     BOOLEAN = 4,
-    NULL = 5
-
+    NULL = 5,
+    VOID = 6 // Para los funciones sin retorno/métodos
 }
 
 /* Tipo de operación aritmética */

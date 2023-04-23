@@ -1,14 +1,27 @@
 import { Symbol } from "./Symbol";
 import { Type } from "./Return";
+import { Instruction } from "./Instruction";
+import { MethodFunction } from "../instruccions/FunctionDeclaration";
 
 //Clase para manejar el entorno de las variables, métodos, funciones...
 export class Environment {
 
     private variables = new Map<string, Symbol>(); //Mapa donde se guardan las variables pertenecientes al ámbito creado
+    private methodsFunctions = new Map<string, MethodFunction>(); //Mapa donde se guardan las funciones y métodos
+
     private prev: Environment | null; //Referencia a entorno anterior
     constructor(prev: Environment | null) {
         this.variables = new Map<string, Symbol>();  
         this.prev = prev;  
+    }
+
+    //Devuelve el entorno global
+    public getGlobalEnvironment(): Environment {
+        let env: Environment | null = this;
+        while (env.prev !== null) {
+            env = env.prev;
+        }
+        return env;
     }
 
     //Agregar una nueva variable al entorno
@@ -24,6 +37,16 @@ export class Environment {
         }
     }
 
+    public addMethodFunction(id:string, func:MethodFunction) {
+        let env: Environment | null = this;
+        if (!env.methodsFunctions.has(id.toLowerCase())) {
+            //No existe ninguna función o método con ese nombre, se guarda
+            env.methodsFunctions.set(id, func);
+        }else {
+            console.log(`Error Semántico, la función ${id} ya existe en el entorno`)
+        }
+    }
+
     //Busca una variable por id en todos los entornos
     public getVariable(id: string): Symbol | undefined | null {
         let env: Environment | null = this;
@@ -36,6 +59,19 @@ export class Environment {
         }
         //No encontró la variable en ningun entorno
         return null;
+    }
+
+    public getMethodFunction(id: string):MethodFunction | undefined | null {
+        let env: Environment | null = this;
+        while (env != null) {
+            if (env.methodsFunctions.has(id)) {
+                //Encontro la variable, devuelve un objeto tipo Symbol -> Ejemplo Symbol { id:"x", value:4, type:TYPE.INT }
+                return env.methodsFunctions.get(id);
+            }
+            env = env.prev;
+        }
+        //No encontró la variable en ningun entorno
+        return null;        
     }
 
     //Actualiza el valor de una variable

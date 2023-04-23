@@ -52,6 +52,7 @@
 "string"            return "String";
 "char"              return "Char";
 "boolean"           return "Boolean";
+"void"              return "Void";
 
 "true"              return "True";
 "false"             return "False";
@@ -113,6 +114,10 @@
     const { DoWhile } = require('../instruccions/DoWhile');
     const { Break } = require('../instruccions/Break');
     const { Switch, Case, DefaultCase } = require('../instruccions/Switch');
+    const { Statement } = require('../instruccions/Statement');
+    const { Parameter } = require('../expressions/Parameter');
+    const { MethodFunction } = require('../instruccions/FunctionDeclaration');
+    const { FunctionCall } = require('../expressions/FunctionCall');
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -170,6 +175,14 @@ INSTRUCCION: DECLARACIONVARIABLE
     {
         $$ = $1;
     }
+    | DECLARACIONFUNCION
+    {
+        $$ = $1;
+    }
+    | LLAMADAFUNCION
+    {
+        $$ = $1;
+    }
     | IF
     {
         $$ = $1;
@@ -200,6 +213,7 @@ INSTRUCCION: DECLARACIONVARIABLE
     }
 ;
 
+/* =============== VARIABLES =============== */
 DECLARACIONVARIABLE: TIPO Id Asignacion EXPRESION PuntoComa
     {
         $$ = new VariableDeclaration(@1.first_line, @1.first_column+1, $2, $4, $1);
@@ -228,6 +242,60 @@ DECREMENTARVARIABLE: Id Decremento PuntoComa
     }
 ;
 
+/* =============== FUNCIONES =============== */
+DECLARACIONFUNCION: TIPO Id ParentesisApertura ParentesisCierre SENTENCIAS
+    {
+        $$ = new MethodFunction(@1.first_line, @1.first_column+1, $1, $2, [], $5);
+    }
+    | TIPO Id ParentesisApertura PARAMETROS ParentesisCierre SENTENCIAS
+    {
+        $$ = new MethodFunction(@1.first_line, @1.first_column+1, $1, $2, $4, $6);
+    }
+;
+
+SENTENCIAS: LlaveApertura INSTRUCCIONES LlaveCierre
+    {
+        $$ = new Statement(@1.first_line, @1.first_column+1, $2);
+    }
+;
+
+PARAMETROS: PARAMETROS Coma PARAMETRO
+    {
+        $1.push($3);
+        $$ = $1;
+    }
+    | PARAMETRO
+    {
+        $$ = [$1];
+    }
+;
+
+PARAMETRO: TIPO Id
+    { $$ = new Parameter(@1.first_line, @1.first_column+1, $1, $2); }
+;
+
+LLAMADAFUNCION: Id ParentesisApertura ParentesisCierre PuntoComa
+    {
+        $$ = new FunctionCall(@1.first_line, @1.first_column+1, $1, []);
+    }
+    | Id ParentesisApertura ARGUMENTOS ParentesisCierre PuntoComa
+    {
+        $$ = new FunctionCall(@1.first_line, @1.first_column+1, $1, $3);
+    }
+;
+
+ARGUMENTOS: ARGUMENTOS Coma EXPRESION
+    {
+        $1.push($3);
+        $$ = $1;
+    }
+    | EXPRESION 
+    {
+        $$ = [$1];
+    }
+;
+
+/* =============== SENTENCIAS DE CONTROL =============== */
 IF: If ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre Else LlaveApertura INSTRUCCIONES LlaveCierre
     {
         $$ = new If(@1.first_line, @1.first_column+1, $3, $6, $10);
@@ -279,6 +347,7 @@ DEFAULTCASE: Default DosPuntos INSTRUCCIONES
     }
 ;
 
+/* =============== SENTENCIAS CÍCLICAS =============== */
 WHILE: While ParentesisApertura EXPRESION ParentesisCierre LlaveApertura INSTRUCCIONES LlaveCierre
     {
         $$ = new While(@1.first_line, @1.first_column+1, $3, $6);
@@ -306,18 +375,21 @@ DOWHILE: Do LlaveApertura INSTRUCCIONES LlaveCierre While ParentesisApertura EXP
     }
 ;
 
+/* =============== SENTENCIAS DE TRANSFERENCIA =============== */
 BREAK: Break PuntoComa
-{
-    $$ = new Break(@1.first_line, @1.first_column+1);
-}
+    {
+        $$ = new Break(@1.first_line, @1.first_column+1);
+    }
 ;
 
+/* =============== FUNCIONES NATIVAS =============== */
 FPRINT: Print ParentesisApertura EXPRESION ParentesisCierre PuntoComa
     {
         $$ = new Print(@1.first_line, @1.first_column + 1, $3);
     }
 ;
 
+/* =============== EXPRESION =============== */
 EXPRESION: ParentesisApertura EXPRESION ParentesisCierre { $$ = $2; }
     | EXPRESION Suma EXPRESION {$$ = new ArithmeticOperation(@1.first_line, @1.first_column+1, $1, $3, ArithmeticOperator.SUMA); }
     | EXPRESION Resta EXPRESION {$$ = new ArithmeticOperation(@1.first_line, @1.first_column+1, $1, $3, ArithmeticOperator.RESTA); }
@@ -341,6 +413,9 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre { $$ = $2; }
     | Id Incremento { $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2); }
     | Id Decremento { $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2); }
 
+    | Id ParentesisApertura ParentesisCierre { $$ = new FunctionCall(@1.first_line, @1.first_column+1, $1, []); }
+    | Id ParentesisApertura ARGUMENTOS ParentesisCierre { $$ = new FunctionCall(@1.first_line, @1.first_column+1, $1, $3); }
+
     | Id { $$ = new Access(@1.first_line, @1.first_column+1, $1); }
     | Entero {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.INT);}
     | Decimal { $$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.DOUBLE);}
@@ -355,4 +430,5 @@ TIPO: Int { $$ = Type.INT }
     | Char { $$ = Type.CHAR }
     | String { $$ = Type.STRING }
     | Boolean { $$ = Type.BOOLEAN }
+    | Void { $$ = Type.VOID }
 ;
