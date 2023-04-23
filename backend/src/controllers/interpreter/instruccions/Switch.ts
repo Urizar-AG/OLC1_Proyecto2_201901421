@@ -3,6 +3,7 @@ import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
 import { Break } from "./Break";
+import { InsReturn } from "./InsReturn";
 
 //Clase para la sentencia de control Switch
 export class Switch extends Instruction {
@@ -61,6 +62,9 @@ export class Switch extends Instruction {
                             //La instrucción es un break
                             if (resultado instanceof Break || j instanceof Break) {
                                 break;
+                            }
+                            if (resultado instanceof InsReturn) {
+                                return resultado;
                             }
                         }    
                     }

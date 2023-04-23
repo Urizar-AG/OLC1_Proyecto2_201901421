@@ -3,6 +3,7 @@ import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
 import { Break } from "./Break";
+import { InsReturn } from "./InsReturn";
 
 //Clase para la sentencia cíclica Do-While
 export class DoWhile extends Instruction {
@@ -27,6 +28,9 @@ export class DoWhile extends Instruction {
                     }
                     if (i instanceof Break) {
                         return;
+                    }
+                    if (resultado instanceof InsReturn) {
+                        return resultado;
                     }
                 }
                 c = this.condition.execute(newEnv);

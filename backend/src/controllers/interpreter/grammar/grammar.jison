@@ -65,6 +65,7 @@
 "for"               return "For";
 "do"                return "Do";
 "break"             return "Break";
+"return"            return "Return";
 "print"             return "Print";
 "main"              return "Main";
 
@@ -118,6 +119,7 @@
     const { Parameter } = require('../expressions/Parameter');
     const { MethodFunction } = require('../instruccions/FunctionDeclaration');
     const { FunctionCall } = require('../expressions/FunctionCall');
+    const { InsReturn } = require('../instruccions/InsReturn');
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -204,6 +206,10 @@ INSTRUCCION: DECLARACIONVARIABLE
         $$ = $1;
     }
     | BREAK
+    {
+        $$ = $1;
+    }
+    | RETURN
     {
         $$ = $1;
     }
@@ -379,6 +385,16 @@ DOWHILE: Do LlaveApertura INSTRUCCIONES LlaveCierre While ParentesisApertura EXP
 BREAK: Break PuntoComa
     {
         $$ = new Break(@1.first_line, @1.first_column+1);
+    }
+;
+
+RETURN: Return PuntoComa
+    {
+        $$ = new InsReturn(@1.first_line, @1.first_column+1, null, Type.VOID);
+    }
+    | Return EXPRESION PuntoComa
+    {
+        $$ = new InsReturn(@1.first_line, @1.first_column+1, $2, Type.VOID);
     }
 ;
 

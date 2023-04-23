@@ -9,7 +9,7 @@ import { Type } from "../abstract/Return";
 */
 
 export class MethodFunction extends Instruction {
-    private typeFunction: Type; //Tipo de la función (int, double, boolean...)
+    public typeFunction: Type; //Tipo de la función (int, double, boolean...)
     public id: string; //Nombre de la función
     public parameters: Expression[]; //Parametros del método
     public statements: Instruction; //Instrucciones declaradas dentro del método

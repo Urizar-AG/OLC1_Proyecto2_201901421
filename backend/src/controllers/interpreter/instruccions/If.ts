@@ -3,6 +3,7 @@ import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
 import { Break } from "./Break";
+import { InsReturn } from "./InsReturn";
 
 //Clase para sentencia de control If
 export class If extends Instruction {
@@ -39,6 +40,9 @@ export class If extends Instruction {
                     if (i instanceof Break) {
                         return i;
                     }
+                    if (resultado instanceof InsReturn) {
+                        return resultado;
+                    }
                 }
             }
         }
@@ -56,6 +60,9 @@ export class If extends Instruction {
                     if (i instanceof Break) {
                         return i;
                     }
+                    if (resultado instanceof InsReturn) {
+                        return resultado;
+                    }
                 }
             }
             //No se cumple el if, ejecuta la sentencia else leída
@@ -65,6 +72,9 @@ export class If extends Instruction {
                     if (!Array.isArray(this.elseStatement)) {
                         let resultado = this.elseStatement.execute(env);
                         if (resultado instanceof Break) {
+                            return resultado;
+                        }
+                        if (resultado instanceof InsReturn) {
                             return resultado;
                         }
                     }
@@ -79,6 +89,9 @@ export class If extends Instruction {
                             }
                             if (i instanceof Break) {
                                 return i;
+                            }
+                            if (resultado instanceof InsReturn) {
+                                return resultado;
                             }
                         }
                     }

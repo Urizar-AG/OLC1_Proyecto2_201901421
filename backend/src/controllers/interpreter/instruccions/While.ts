@@ -3,6 +3,7 @@ import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
 import { Break } from "./Break";
+import { InsReturn } from "./InsReturn";
 
 //Clase para la sentencia cíclica While
 export class While extends Instruction {
@@ -31,6 +32,9 @@ export class While extends Instruction {
                 }
                 if (i instanceof Break) {
                     return;
+                }
+                if (resultado instanceof InsReturn) {
+                    return resultado;
                 }
             }
             // this.statement.execute(newEnvironment);
