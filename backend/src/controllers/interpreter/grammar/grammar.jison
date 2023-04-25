@@ -6,6 +6,11 @@
 
 %%
 
+/* =============== IGNORAR =============== */
+\s+                                     {/* Espacios en blanco */}
+(\/\/.*[^\n])                             {/* Comentario de una sola línea */}
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]     {/* Comentario multilínea */}
+
 /* =============== SÍMBOLOS RESERVADOS =============== */
 //Operadores incremento y decremento
 "++"                return "Incremento";
@@ -56,16 +61,20 @@
 
 "true"              return "True";
 "false"             return "False";
+//Sentencias de control
 "if"                return "If";
 "else"              return "Else";
 "switch"            return "Switch";
 "case"              return "Case";
 "default"           return "Default";
+//Sentencias cíclicas
 "while"             return "While";
 "for"               return "For";
 "do"                return "Do";
+//Sentencias de transferencia
 "break"             return "Break";
 "return"            return "Return";
+//funciones nativas
 "print"             return "Print";
 "main"              return "Main";
 
@@ -78,16 +87,10 @@
 <string>[^"\\]+                 { cadena += yytext; }
 <string>"\\\""                  { cadena += "\""; }
 <string>"\\n"                   { cadena += "\n"; }
-<string>\s                      { cadena += " "; }
 <string>"\\t"                   { cadena += "\t"; }
 <string>"\\\\"                  { cadena += "\\"; }
 <string>"\\\'"                  { cadena += "\'"; }
 <string>["]                     { yytext = cadena; this.popState(); return 'Cadena'; }
-
-/* =============== IGNORAR =============== */
-\s+                                     {/* Espacios en blanco */}
-(\/\/).*                                {/* Comentario de una sola línea */}
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]     {/* Comentario multilínea */}
 
 /* =============== FINAL DEL ARCHIVO =============== */
 <<EOF>>             return 'EOF';

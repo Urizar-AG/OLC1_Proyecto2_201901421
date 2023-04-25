@@ -350,7 +350,7 @@ export class ArithmeticOperation extends Expression {
                 switch (opr2) {
                     case Type.INT:
                         if (operando2.value !== 0) {
-                            return { value:operando1.value / operando2.value, type:Type.INT }
+                            return { value:operando1.value / operando2.value, type:Type.DOUBLE }
                         }
                         return { value:"Error Semántico división entre 0", type:Type.NULL }
                     case Type.DOUBLE:

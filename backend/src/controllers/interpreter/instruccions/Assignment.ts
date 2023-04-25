@@ -29,7 +29,7 @@ export class Assignment extends Instruction {
                 //El tipo de dato coincide con el tipo de variable, se puede asignar el valor
                 env.updateVariable(this.id, nuevoValor.value);
             } else {
-                console.log(`Error Semántico, ${nuevoValor.type} no puede ser asignado a ${variable.typePrimitive}`);
+                console.log(`Error Semántico, ${nuevoValor.type} no puede ser asignado a ${variable.typePrimitive}, línea ${this.line} y columna ${this.column}`);
             }
         }
 
