@@ -1,0 +1,28 @@
+body{
+    background-color: lightgrey;
+}
+
+.main-container{
+    display: grid;
+    gap: 1em; /* Separacion entre las filas y columnas */
+    /* max-height: 100vh; */
+    grid-template-columns: 620px 620px;
+    /* Distribución de los componentes */
+    grid-template-areas: 
+        "editor consola" 
+    ;
+    justify-content: center;
+    text-align: center;
+}
+
+.editor-container {
+    grid-area: editor;
+    height: fit-content;
+}
+
+.consola-container {
+    grid-area: consola;
+    height: fit-content;
+}
+
+.CodeMirror { text-align: left; } 
