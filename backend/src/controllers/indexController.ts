@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { Environment } from "./interpreter/abstract/Environment";
-import { MethodFunction } from "./interpreter/instruccions/FunctionDeclaration";
+import { MethodFunction } from "./interpreter/instructions/FunctionDeclaration";
 import { PrintList } from "./interpreter/reports/PrintList";
 import { ListaErrores } from "./interpreter/reports/Error";
-import { VariableDeclaration } from "./interpreter/instruccions/VariableDeclaration";
+import { VariableDeclaration } from "./interpreter/instructions/VariableDeclaration";
+import { Main } from "./interpreter/instructions/Main";
 
 class IndexCrontroller {
 
@@ -35,10 +36,10 @@ class IndexCrontroller {
 
             //Recorre la segunda vez para ejecutar el código
             for(const inst of ast) {
-                if (inst instanceof MethodFunction) {
-                    continue;
+                if (inst instanceof Main) {
+                    // continue;
+                    inst.execute(globalEnvironment);
                 }
-                inst.execute(globalEnvironment);
             }
 
 

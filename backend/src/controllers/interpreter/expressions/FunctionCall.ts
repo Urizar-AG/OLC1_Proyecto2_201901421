@@ -1,7 +1,7 @@
 import { Environment } from "../abstract/Environment";
 import { Expression } from "../abstract/Expression";
 import { Return, Type } from "../abstract/Return";
-import { InsReturn } from "../instruccions/InsReturn";
+import { InsReturn } from "../instructions/InsReturn";
 
 //Clase para manejar la llamada de funciones
 export class FunctionCall extends Expression {

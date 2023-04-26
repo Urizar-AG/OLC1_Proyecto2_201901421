@@ -106,28 +106,29 @@
 
 /* ========================= DEFINICIÓN SINTÁCTICA ========================= */
 %{
-    const { Print } = require('../instruccions/Print');
+    const { Print } = require('../instructions/Print');
     const { Primitive } = require('../expressions/Primitive');
     const { Type, ArithmeticOperator, RelationalOperator, LogicalOperator } = require('../abstract/Return');
     const { ArithmeticOperation } = require('../expressions/ArithmeticOperation');
     const { RelationalOperation } = require('../expressions/RelationalOperation');
     const { LogicalOperation } = require('../expressions/LogicalOperation');
-    const { VariableDeclaration }  = require('../instruccions/VariableDeclaration');
+    const { VariableDeclaration }  = require('../instructions/VariableDeclaration');
     const { Access } = require('../expressions/Access');
-    const { Assignment } = require('../instruccions/Assignment');
+    const { Assignment } = require('../instructions/Assignment');
     const { IncrementDecrement } = require('../expressions/IncrementDecrement');
-    const { If } = require('../instruccions/If');
-    const { While } = require('../instruccions/While');
-    const { For } = require('../instruccions/For');
-    const { DoWhile } = require('../instruccions/DoWhile');
-    const { Break } = require('../instruccions/Break');
-    const { Switch, Case, DefaultCase } = require('../instruccions/Switch');
-    const { Statement } = require('../instruccions/Statement');
+    const { If } = require('../instructions/If');
+    const { While } = require('../instructions/While');
+    const { For } = require('../instructions/For');
+    const { DoWhile } = require('../instructions/DoWhile');
+    const { Break } = require('../instructions/Break');
+    const { Switch, Case, DefaultCase } = require('../instructions/Switch');
+    const { Statement } = require('../instructions/Statement');
     const { Parameter } = require('../expressions/Parameter');
-    const { MethodFunction } = require('../instruccions/FunctionDeclaration');
+    const { MethodFunction } = require('../instructions/FunctionDeclaration');
     const { FunctionCall } = require('../expressions/FunctionCall');
-    const { InsReturn } = require('../instruccions/InsReturn');
+    const { InsReturn } = require('../instructions/InsReturn');
     const { Error, ListaErrores } = require('../reports/Error');
+    const { Main } = require('../instructions/Main')
     // const { ListaErrores } = require('../reports/ListaErrores')
 %}
 
@@ -219,6 +220,10 @@ INSTRUCCION: DECLARACIONVARIABLE
         $$ = $1;
     }
     | FPRINT
+    {
+        $$ = $1;
+    }
+    | MAIN
     {
         $$ = $1;
     }
@@ -413,6 +418,12 @@ RETURN: Return PuntoComa
 FPRINT: Print ParentesisApertura EXPRESION ParentesisCierre PuntoComa
     {
         $$ = new Print(@1.first_line, @1.first_column + 1, $3);
+    }
+;
+
+MAIN: Main LLAMADAFUNCION
+    {
+        $$ = new Main(@1.first_line, @1.first_column+1, $2);
     }
 ;
 

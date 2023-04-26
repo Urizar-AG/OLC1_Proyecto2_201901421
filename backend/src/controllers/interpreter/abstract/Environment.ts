@@ -1,7 +1,7 @@
 import { Symbol } from "./Symbol";
 import { Type } from "./Return";
 import { Instruction } from "./Instruction";
-import { MethodFunction } from "../instruccions/FunctionDeclaration";
+import { MethodFunction } from "../instructions/FunctionDeclaration";
 
 //Clase para manejar el entorno de las variables, métodos, funciones...
 export class Environment {
