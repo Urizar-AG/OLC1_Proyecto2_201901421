@@ -7,4 +7,6 @@ router.get('/test', indexController.test);
 
 router.post('/interpretar', indexController.interpretar);
 
+router.get('/reporte-errores', indexController.generarReporteErrores);
+
 export default router;

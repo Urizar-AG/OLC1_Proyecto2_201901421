@@ -1,5 +1,9 @@
-body{
+/* body{
     background-color: lightgrey;
+} */
+
+.navbar {
+    background: linear-gradient(270deg, #000046, #08AEF5); 
 }
 
 .main-container{
@@ -25,4 +29,4 @@ body{
     height: fit-content;
 }
 
-.CodeMirror { text-align: left; } 
+.CodeMirror { text-align: left; padding: 1px 8px 0 5px; } 

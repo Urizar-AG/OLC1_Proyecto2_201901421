@@ -59,23 +59,35 @@ function guardarArchivo() {
     link.click();
 }
 
+const btnReporteErrores = document.getElementById('reporte-errores')
+btnReporteErrores.addEventListener('click', () => {
+    window.open ('../pages/reporte-errores.html', "_newtab" ); 
+});
+
 const btnEjecutar = document.getElementById('ejecutar');
 btnEjecutar.addEventListener('click', analizarCodigo);
 
 async function analizarCodigo(){
-    let objeto = {
-        "code": editor.getValue()
-    }
 
-    //Consulta al backend
-    let respuesta = await fetch(`http://localhost:3000/indexRoutes/interpretar`, {
-        method: 'POST',
-        body: JSON.stringify(objeto),
-        headers: {
-            'Content-Type': 'application/json',
-            
+    try {
+        let objeto = {
+            "code": editor.getValue()
         }
-        //'Acces-Control-Allow-Origin': '*'
-    });
-    console.log('AaAAAAAAAAAAAAAA')
+        //Consulta al backend
+        let respuesta = await fetch(`http://localhost:3000/indexRoutes/interpretar`, {
+            method: 'POST',
+            body: JSON.stringify(objeto),
+            headers: {
+                'Content-Type': 'application/json',
+
+            }
+            //'Acces-Control-Allow-Origin': '*'
+        });
+        let data = await respuesta.json();
+        consola.setValue(data.consola);
+        console.log('AaAAAAAAAAAAAAAA')        
+    } catch (error) {
+        console.log(error)
+        consola.setValue('Error en el servidor');
+    }
 }

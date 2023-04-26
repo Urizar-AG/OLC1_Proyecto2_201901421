@@ -96,7 +96,11 @@
 <<EOF>>             return 'EOF';
 
 /* =============== ERRORES LÉXICOS =============== */
-.   { console.log('Léxico: ' + yytext + ', en la línea ' + yylloc.first_line + ' en la columna ' + (yylloc.first_column + 1)); }
+.   { 
+        //console.log('Léxico: ' + yytext + ', en la línea ' + yylloc.first_line + ' en la columna ' + (yylloc.first_column + 1)); 
+        const newError = new Error('Léxico', 'Carácter no reconocido: ' + yytext, yylloc.first_line, yylloc.first_column+1);
+        ListaErrores.push(newError);
+    }
 /lex
 
 
@@ -123,6 +127,8 @@
     const { MethodFunction } = require('../instruccions/FunctionDeclaration');
     const { FunctionCall } = require('../expressions/FunctionCall');
     const { InsReturn } = require('../instruccions/InsReturn');
+    const { Error, ListaErrores } = require('../reports/Error');
+    // const { ListaErrores } = require('../reports/ListaErrores')
 %}
 
 /* =============== PRECEDENCIA DE OPERADORES =============== */
@@ -157,10 +163,6 @@ INSTRUCCIONES: INSTRUCCIONES INSTRUCCION
     | INSTRUCCION
     {
         $$ = [$1];
-    }
-    | error PuntoComa
-    {
-        console.error('Sintáctico: ' + $1 + ', en la línea ' + @1.first_line + ' en la columna ' + (@1.first_column + 1));
     }
 ;
 
@@ -219,6 +221,12 @@ INSTRUCCION: DECLARACIONVARIABLE
     | FPRINT
     {
         $$ = $1;
+    }
+    | error PuntoComa
+    {
+        //console.error('Sintáctico: ' + $1 + ', en la línea ' + @1.first_line + ' en la columna ' + (@1.first_column + 1));
+        const newError = new Error('Sintáctico', 'No se esperaba: ' + yytext, @1.first_line, @1.first_column+1);
+        ListaErrores.push(newError);
     }
 ;
 

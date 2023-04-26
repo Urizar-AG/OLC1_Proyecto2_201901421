@@ -1,0 +1,32 @@
+.navbar {
+    background: linear-gradient(270deg, #000046, #08AEF5); 
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 20px 120px;
+}
+
+table {
+    border: solid 3px;
+    border-color: black;
+}
+
+table thead {
+    color: #ffffff;
+    font-weight: bold;
+    letter-spacing: 1px;
+    background: linear-gradient(270deg, #000046, #08AEF5); 
+    border-bottom: solid #000000;
+}
+
+table tr:nth-child(even) {
+    background-color: #d8d8d8;
+}
+
+table th, td {
+    padding: 10px;
+}
