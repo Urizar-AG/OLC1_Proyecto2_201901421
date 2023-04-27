@@ -64,6 +64,23 @@ btnReporteErrores.addEventListener('click', () => {
     window.open ('../pages/reporte-errores.html', "_newtab" ); 
 });
 
+const btnReporteArbol = document.getElementById('reporte-arbol')
+btnReporteArbol.addEventListener('click', () => {
+    // window.open ('../pages/reporte-ast.html', "_newtab" );
+    async function reporteAST(){
+
+        try {
+            //Consulta al backend
+            let respuesta = await fetch(`http://localhost:3000/indexRoutes/reporte-ast`);
+            let data = await respuesta.json();
+            console.log(data.info)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    reporteAST();
+});
+
 const btnEjecutar = document.getElementById('ejecutar');
 btnEjecutar.addEventListener('click', analizarCodigo);
 

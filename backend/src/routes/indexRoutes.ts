@@ -9,4 +9,6 @@ router.post('/interpretar', indexController.interpretar);
 
 router.get('/reporte-errores', indexController.generarReporteErrores);
 
+router.get('/reporte-ast', indexController.generarArbolAST);
+
 export default router;
