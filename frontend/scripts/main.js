@@ -59,6 +59,11 @@ function guardarArchivo() {
     link.click();
 }
 
+const btnTablaSimbolos = document.getElementById('tabla-simbolos')
+btnTablaSimbolos.addEventListener('click', () => {
+    window.open ('../pages/reporte-simbolos.html', "_newtab" ); 
+});
+
 const btnReporteErrores = document.getElementById('reporte-errores')
 btnReporteErrores.addEventListener('click', () => {
     window.open ('../pages/reporte-errores.html', "_newtab" ); 

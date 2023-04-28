@@ -7,6 +7,8 @@ router.get('/test', indexController.test);
 
 router.post('/interpretar', indexController.interpretar);
 
+router.get('/tabla-simbolos', indexController.generarTablaSimbolos)
+
 router.get('/reporte-errores', indexController.generarReporteErrores);
 
 router.get('/reporte-ast', indexController.generarArbolAST);
