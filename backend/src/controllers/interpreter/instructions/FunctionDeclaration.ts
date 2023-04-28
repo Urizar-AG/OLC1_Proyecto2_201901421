@@ -23,6 +23,6 @@ export class MethodFunction extends Instruction {
     }
 
     public execute(env: Environment) {
-        env.addMethodFunction(this.id, this);
+        env.addMethodFunction(this.line, this.column, this.id, this);
     }
 }

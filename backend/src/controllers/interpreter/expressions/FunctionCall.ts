@@ -17,7 +17,12 @@ export class FunctionCall extends Expression {
     public execute(env: Environment): any {
         let funcion = env.getMethodFunction(this.id);
         if (funcion != null) {
-            let newEnv = new Environment(env.getGlobalEnvironment())
+            let newEnv = new Environment(env.getGlobalEnvironment());
+            if (funcion.typeFunction === Type.VOID) {
+                newEnv.name = "METODO " + this.id;
+            }else {
+                newEnv.name = "FUNCION " + this.id;
+            }
             //Verifica que se cumpla la misma cantidad de parámetros
             if (funcion.parameters?.length === this.args.length) {
                 //Verifica los parámetros contra los argumentos

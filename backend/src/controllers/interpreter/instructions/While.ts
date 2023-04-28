@@ -23,6 +23,7 @@ export class While extends Instruction {
         
         while (condicion.value) {
             let newEnvironment = new Environment(env);
+            newEnvironment.name = env.name + " - WHILE";
             let resultado;
             for (const i of this.statements) {
                 resultado = i.execute(newEnvironment);

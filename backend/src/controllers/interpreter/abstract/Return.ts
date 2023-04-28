@@ -9,6 +9,28 @@ export enum Type {
     VOID = 6 // Para los funciones sin retorno/métodos
 }
 
+/* Recupera el tipo de dato primitivo */
+export function getType(tipo:Type) {
+    switch (tipo) {
+        case 0:
+            return "INT";
+        case 1:
+            return "DOUBLE"
+        case 2:
+            return "CHAR";
+        case 3:
+            return "STRING";
+        case 4:
+            return "BOOLEAN";
+        case 5:
+            return "NULL";
+        case 6:
+            return "VOID"
+        default:
+            return "-";
+    }
+}
+
 /* Tipo de operación aritmética */
 export enum ArithmeticOperator {
     SUMA = 0,

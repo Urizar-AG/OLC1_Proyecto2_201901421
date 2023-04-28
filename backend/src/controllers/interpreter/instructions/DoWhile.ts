@@ -20,6 +20,7 @@ export class DoWhile extends Instruction {
         if (c.type !== Type.NULL) {
             do {
                 let newEnv = new Environment(env);
+                newEnv.name = env.name + " - DOWHILE";
                 let resultado;
                 for (const i of this.statements) {
                     resultado = i.execute(newEnv);

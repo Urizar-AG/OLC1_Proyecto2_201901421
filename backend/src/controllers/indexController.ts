@@ -6,6 +6,7 @@ import { ListaErrores } from "./interpreter/reports/Error";
 import { VariableDeclaration } from "./interpreter/instructions/VariableDeclaration";
 import { Main } from "./interpreter/instructions/Main";
 import { Graficador} from "./interpreter/reports/Graficador";
+import { TablaSimbolos, TSymbol } from "./interpreter/reports/TablaSimbolos";
 
 import { writeFile } from "fs/promises";
 import { exec } from "child_process";
@@ -25,12 +26,15 @@ class IndexCrontroller {
             /* =============== INTÉRPRETE =============== */
             console.log('Interpretando... \n')
             ListaErrores.splice(0, ListaErrores.length);
+            TablaSimbolos.splice(0, TablaSimbolos.length);
+            
             let parser = require("./interpreter/grammar/grammar");
             //Recupera el código enviando desde el frontend y lo manda al parser
             let code = req.body.code; 
             const ast = parser.parse(code);
             PrintList.splice(0, PrintList.length);
             const globalEnvironment = new Environment(null);
+            globalEnvironment.name = "GLOBAL";
 
 
             //Recorre una vez para guardar las declaraciones de métodos y funciones
@@ -105,6 +109,12 @@ class IndexCrontroller {
                 });
             }
         }
+    }
+
+    public generarTablaSimbolos(req:Request, res:Response) {
+        res.json({
+            info: TablaSimbolos
+        });    
     }
 
     public generarReporteErrores(req:Request, res:Response) {

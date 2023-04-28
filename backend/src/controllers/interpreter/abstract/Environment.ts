@@ -1,15 +1,18 @@
 import { Symbol } from "./Symbol";
-import { Type } from "./Return";
+import { getType, Type } from "./Return";
 import { Instruction } from "./Instruction";
 import { MethodFunction } from "../instructions/FunctionDeclaration";
+import { TablaSimbolos, TSymbol } from "../reports/TablaSimbolos";
+
 
 //Clase para manejar el entorno de las variables, métodos, funciones...
 export class Environment {
 
     private variables = new Map<string, Symbol>(); //Mapa donde se guardan las variables pertenecientes al ámbito creado
     private methodsFunctions = new Map<string, MethodFunction>(); //Mapa donde se guardan las funciones y métodos
+    public prev: Environment | null; //Referencia a entorno anterior
+    public name:string = ""; //Nombre del entorno
 
-    private prev: Environment | null; //Referencia a entorno anterior
     constructor(prev: Environment | null) {
         this.variables = new Map<string, Symbol>();  
         this.prev = prev;  
@@ -30,18 +33,32 @@ export class Environment {
         let env: Environment | null = this;
 
         if (!env.variables.has(id.toLowerCase())) {
-            //La variable no existe dentro del ámbito se puede crear
+            //La variable no existe dentro del ámbito, se puede crear
             env.variables.set(id.toLowerCase(), new Symbol(id, value, type));
+            //Para el reporte de la tabla de símbolos
+            const tSymbol = new TSymbol(id, "Variable", getType(type), this.name, line, column);
+            TablaSimbolos.push(tSymbol);
         }else {
             console.log(`Error la variable ya existe en el entorno, línea ${line} y columna ${column}`)
         }
     }
 
-    public addMethodFunction(id:string, func:MethodFunction) {
+    public addMethodFunction(line:number, column:number, id:string, func:MethodFunction) {
         let env: Environment | null = this;
         if (!env.methodsFunctions.has(id.toLowerCase())) {
             //No existe ninguna función o método con ese nombre, se guarda
             env.methodsFunctions.set(id, func);
+            //Para el reporte de la tabla de símbolos
+
+            //Encuentra el tipo de declaración
+            let tipo = "";
+            if (func.typeFunction === Type.VOID) {
+                tipo = "Método";
+            }else {
+                tipo = "Función";
+            }
+            const tSymbol = new TSymbol(id, tipo, getType(func.typeFunction), this.name, line, column);
+            TablaSimbolos.push(tSymbol);
         }else {
             console.log(`Error Semántico, la función ${id} ya existe en el entorno`)
         }
@@ -61,6 +78,7 @@ export class Environment {
         return null;
     }
 
+    //Busca un método o función por su ID, en los entornos
     public getMethodFunction(id: string):MethodFunction | undefined | null {
         let env: Environment | null = this;
         while (env != null) {

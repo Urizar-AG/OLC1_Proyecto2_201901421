@@ -30,6 +30,7 @@ export class If extends Instruction {
         //No hay una sentencia else
         if (!this.elseStatement) {
             let newEnvironment = new Environment(env); 
+            newEnvironment.name = env.name + " - IF";
             //Si se cumple la condición se ejecuta el if
             if (condition.value) {
                 for (const i of this.ifStatement) {
@@ -49,6 +50,7 @@ export class If extends Instruction {
         //Si existe una sentencia else
         else {
             let newEnvironment = new Environment(env);
+            newEnvironment.name = env.name + " - IF";
             //Se cumple la condición del IF
             if (condition.value) {
                 let resultado;

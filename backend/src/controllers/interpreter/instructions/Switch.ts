@@ -32,6 +32,7 @@ export class Switch extends Instruction {
                             //Ejecuta si se cumple la condición del "Case"
                             if (condition.value == caseCondition.value) {
                                 let newEnv = new Environment(env);
+                                newEnv.name = env.name + " - SWITCH - CASE";
                                 for (const j of i.statement) {
                                     const resultado = j.execute(newEnv);
                                     
@@ -56,6 +57,7 @@ export class Switch extends Instruction {
                     let instruccionesDefault = this.def.execute(env); //Obtiene las declaradas dentro del Default
                     if (instruccionesDefault) {
                         let newEnv = new Environment(env);
+                        newEnv.name = env.name + " - SWITCH - DEFAULT"
                         //Ejecuta las instruccions del Default
                         for (const j of instruccionesDefault) {
                             const resultado = j.execute(newEnv);

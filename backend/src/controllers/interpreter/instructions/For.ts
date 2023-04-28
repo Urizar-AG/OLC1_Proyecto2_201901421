@@ -23,11 +23,13 @@ export class For extends Instruction {
     public execute(env: Environment) {
         try {
             let newEnv = new Environment(env);
+            newEnv.name = env.name + " - FOR";
             let index = this.variableIndice.execute(newEnv);
             let condition = this.condicion.execute(newEnv);
             if (condition.type !== Type.NULL) {
                 while (condition.value) {
                     let newEnv2 = new Environment(newEnv);
+                    newEnv2.name = newEnv.name + " - INSIDEFOR";
                     let resultado;
                     for(const i of this.statements) {
                         resultado = i.execute(newEnv2);

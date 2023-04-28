@@ -14,6 +14,9 @@ export class Statement extends Instruction {
 
     public execute(env: Environment) {
         let newEnv = new Environment(env);
+        newEnv.name = newEnv.prev?.name + "";
+        // newEnv.name = env.name + " - INSTRUCCIONES";
+        
         for (const i of this.statements) {
             let resultado = i.execute(newEnv);
             if (i instanceof InsReturn) {
