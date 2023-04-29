@@ -73,6 +73,7 @@
 "do"                return "Do";
 //Sentencias de transferencia
 "break"             return "Break";
+"continue"          return "Continue";
 "return"            return "Return";
 //funciones nativas
 "print"             return "Print";
@@ -290,6 +291,15 @@ INSTRUCCION: DECLARACIONVARIABLE
         $$ = respuesta; 
     }
     | BREAK
+    {
+        nodo = new Node("INSTRUCCION", "INSTRUCCION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
+    }
+    | CONTINUE
     {
         nodo = new Node("INSTRUCCION", "INSTRUCCION");
         nodo.add($1.nodo);
@@ -685,6 +695,16 @@ BREAK: Break PuntoComa
     }
 ;
 
+CONTINUE: Continue PuntoComa
+    {
+        nodo = new Node("CONTINUE", "CONTINUE");
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+;   
+
 RETURN: Return PuntoComa
     {
         nodo = new Node("RETURN", "RETURN");
@@ -806,6 +826,18 @@ MAIN: Main LLAMADAFUNCION
     {
         nodo = new Node("MAIN", "MAIN");
         nodo.add($2.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+;
+
+/* =============== OPERADOR TERNARIO =============== */
+TERNARIO: EXPRESION Ternario EXPRESION DosPuntos EXPRESION
+    {
+        nodo = new Node("TERNARIO", "TERNARIO");
+        nodo.add($1.nodo, $3.nodo, $5.nodo);
         respuesta = {
             nodo: nodo
         }
@@ -1070,6 +1102,16 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre
             nodo: nodo
         }
         $$ = respuesta; 
+    }
+
+    |TERNARIO
+    {
+        nodo = new Node("EXPRESION", "EXPRESION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
     }
 
     | Id 
