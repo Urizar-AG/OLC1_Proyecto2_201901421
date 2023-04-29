@@ -3,6 +3,7 @@ import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
 import { Break } from "./Break";
+import { Continue } from "./Continue";
 import { InsReturn } from "./InsReturn";
 
 //Clase para la sentencia cíclica While
@@ -36,6 +37,10 @@ export class While extends Instruction {
                 }
                 if (resultado instanceof InsReturn) {
                     return resultado;
+                }
+                if (resultado instanceof Continue || i instanceof Continue) {
+                    //Al romper el for, se salta la iteración del while
+                    break;                    
                 }
             }
             // this.statement.execute(newEnvironment);

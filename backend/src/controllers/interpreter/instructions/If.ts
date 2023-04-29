@@ -3,6 +3,7 @@ import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
 import { Break } from "./Break";
+import { Continue } from "./Continue";
 import { InsReturn } from "./InsReturn";
 
 //Clase para sentencia de control If
@@ -35,15 +36,16 @@ export class If extends Instruction {
             if (condition.value) {
                 for (const i of this.ifStatement) {
                     let resultado = i.execute(newEnvironment);
-                    if(resultado instanceof Break) {
+                    if(resultado instanceof Break || resultado instanceof Continue) {
                         return resultado;
                     }
-                    if (i instanceof Break) {
+                    if (i instanceof Break || i instanceof Continue) {
                         return i;
                     }
                     if (resultado instanceof InsReturn) {
                         return resultado;
                     }
+
                 }
             }
         }
@@ -56,10 +58,10 @@ export class If extends Instruction {
                 let resultado;
                 for (const i of this.ifStatement) {
                     resultado = i.execute(newEnvironment);
-                    if(resultado instanceof Break) {
+                    if(resultado instanceof Break || resultado instanceof Continue) {
                         return resultado;
                     }
-                    if (i instanceof Break) {
+                    if (i instanceof Break || i instanceof Continue) {
                         return i;
                     }
                     if (resultado instanceof InsReturn) {
@@ -73,7 +75,7 @@ export class If extends Instruction {
                     //Si elseStatement no es un arreglo, se ejecuta el else directamente
                     if (!Array.isArray(this.elseStatement)) {
                         let resultado = this.elseStatement.execute(env);
-                        if (resultado instanceof Break) {
+                        if (resultado instanceof Break || resultado instanceof Continue) {
                             return resultado;
                         }
                         if (resultado instanceof InsReturn) {
@@ -86,10 +88,10 @@ export class If extends Instruction {
                         let resultado;
                         for (const i of this.elseStatement) {
                             resultado = i.execute(newEnvironment);
-                            if(resultado instanceof Break) {
+                            if(resultado instanceof Break || resultado instanceof Continue) {
                                 return resultado;
                             }
-                            if (i instanceof Break) {
+                            if (i instanceof Break || i instanceof Continue) {
                                 return i;
                             }
                             if (resultado instanceof InsReturn) {

@@ -3,6 +3,7 @@ import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
 import { Break } from "./Break";
+import { Continue } from "./Continue";
 import { InsReturn } from "./InsReturn";
 
 
@@ -42,6 +43,9 @@ export class For extends Instruction {
                         }
                         if (resultado instanceof InsReturn) {
                             return resultado;
+                        }
+                        if (resultado instanceof Continue || i instanceof Continue) {
+                            break;
                         }
                     }
                     this.actualizacionIndice.execute(newEnv);

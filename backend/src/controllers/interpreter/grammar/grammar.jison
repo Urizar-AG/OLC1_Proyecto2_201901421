@@ -73,6 +73,7 @@
 "do"                return "Do";
 //Sentencias de transferencia
 "break"             return "Break";
+"continue"          return "Continue";
 "return"            return "Return";
 //funciones nativas
 "print"             return "Print";
@@ -143,6 +144,7 @@
     const { Round } = require('../expressions/Round');
     const { Typeof } = require('../expressions/Typeof');
     const { Ternary } = require('../expressions/Ternary');
+    const { Continue } = require('../instructions/Continue');
     const { Main } = require('../instructions/Main');
     // const { ListaErrores } = require('../reports/ListaErrores')
 %}
@@ -227,6 +229,10 @@ INSTRUCCION: DECLARACIONVARIABLE
         $$ = $1;
     }
     | BREAK
+    {
+        $$ = $1;
+    }
+    | CONTINUE
     {
         $$ = $1;
     }
@@ -416,6 +422,12 @@ DOWHILE: Do LlaveApertura INSTRUCCIONES LlaveCierre While ParentesisApertura EXP
 BREAK: Break PuntoComa
     {
         $$ = new Break(@1.first_line, @1.first_column+1);
+    }
+;
+
+CONTINUE: Continue PuntoComa
+    {
+        $$ = new Continue(@1.first_line, @1.first_column+1);
     }
 ;
 

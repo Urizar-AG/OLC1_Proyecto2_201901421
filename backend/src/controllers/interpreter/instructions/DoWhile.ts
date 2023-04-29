@@ -3,6 +3,7 @@ import { Expression } from "../abstract/Expression";
 import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
 import { Break } from "./Break";
+import { Continue } from "./Continue";
 import { InsReturn } from "./InsReturn";
 
 //Clase para la sentencia cíclica Do-While
@@ -32,6 +33,12 @@ export class DoWhile extends Instruction {
                     }
                     if (resultado instanceof InsReturn) {
                         return resultado;
+                    }
+                    if (resultado instanceof Continue || i instanceof Continue) {
+                        console.log(resultado);
+                        console.log(i);
+                        //Al romper el for, se salta la iteración del dowhile
+                        break;
                     }
                 }
                 c = this.condition.execute(newEnv);

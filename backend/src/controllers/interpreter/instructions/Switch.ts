@@ -41,6 +41,9 @@ export class Switch extends Instruction {
                                         coincidencia = true;
                                         break;
                                     }
+                                    if (resultado instanceof InsReturn) {
+                                        return resultado;
+                                    }
                                 }
                             }
                         }
