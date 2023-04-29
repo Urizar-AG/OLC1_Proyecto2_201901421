@@ -76,6 +76,13 @@
 "return"            return "Return";
 //funciones nativas
 "print"             return "Print";
+"toString"          return "ToString";
+"toLower"           return "ToLower";
+"toUpper"           return "ToUpper";
+"length"            return "Length";
+"truncate"          return "Truncate";
+"round"             return "Round";
+"typeof"            return "Typeof";
 "main"              return "Main";
 
 /* =============== EXPRESIONES REGULARES =============== */
@@ -106,29 +113,29 @@
 
 /* ========================= DEFINICIÓN SINTÁCTICA ========================= */
 %{
-    const { Print } = require('../instructions/Print');
-    const { Primitive } = require('../expressions/Primitive');
-    const { Type, ArithmeticOperator, RelationalOperator, LogicalOperator } = require('../abstract/Return');
-    const { ArithmeticOperation } = require('../expressions/ArithmeticOperation');
-    const { RelationalOperation } = require('../expressions/RelationalOperation');
-    const { LogicalOperation } = require('../expressions/LogicalOperation');
-    const { VariableDeclaration }  = require('../instructions/VariableDeclaration');
-    const { Access } = require('../expressions/Access');
-    const { Assignment } = require('../instructions/Assignment');
-    const { IncrementDecrement } = require('../expressions/IncrementDecrement');
-    const { If } = require('../instructions/If');
-    const { While } = require('../instructions/While');
-    const { For } = require('../instructions/For');
-    const { DoWhile } = require('../instructions/DoWhile');
-    const { Break } = require('../instructions/Break');
-    const { Switch, Case, DefaultCase } = require('../instructions/Switch');
-    const { Statement } = require('../instructions/Statement');
-    const { Parameter } = require('../expressions/Parameter');
-    const { MethodFunction } = require('../instructions/FunctionDeclaration');
-    const { FunctionCall } = require('../expressions/FunctionCall');
-    const { InsReturn } = require('../instructions/InsReturn');
+    //const { Print } = require('../instructions/Print');
+    //const { Primitive } = require('../expressions/Primitive');
+    //const { Type, ArithmeticOperator, RelationalOperator, LogicalOperator } = require('../abstract/Return');
+    // const { ArithmeticOperation } = require('../expressions/ArithmeticOperation');
+    // const { RelationalOperation } = require('../expressions/RelationalOperation');
+    // const { LogicalOperation } = require('../expressions/LogicalOperation');
+    // const { VariableDeclaration }  = require('../instructions/VariableDeclaration');
+    // const { Access } = require('../expressions/Access');
+    // const { Assignment } = require('../instructions/Assignment');
+    // const { IncrementDecrement } = require('../expressions/IncrementDecrement');
+    // const { If } = require('../instructions/If');
+    // const { While } = require('../instructions/While');
+    // const { For } = require('../instructions/For');
+    // const { DoWhile } = require('../instructions/DoWhile');
+    // const { Break } = require('../instructions/Break');
+    // const { Switch, Case, DefaultCase } = require('../instructions/Switch');
+    // const { Statement } = require('../instructions/Statement');
+    // const { Parameter } = require('../expressions/Parameter');
+    // const { MethodFunction } = require('../instructions/FunctionDeclaration');
+    // const { FunctionCall } = require('../expressions/FunctionCall');
+    //const { InsReturn } = require('../instructions/InsReturn');
     // const { Error, ListaErrores } = require('../reports/Error');
-    const { Main } = require('../instructions/Main');
+    // const { Main } = require('../instructions/Main');
     const { Node } = require('../reports/Node');
     let nodo; //nodo raíz
     let respuesta; //json con la variable nodo
@@ -300,7 +307,7 @@ INSTRUCCION: DECLARACIONVARIABLE
         }
         $$ = respuesta; 
     }
-    | FPRINT
+    | PRINT
     {
         nodo = new Node("INSTRUCCION", "INSTRUCCION");
         nodo.add($1.nodo);
@@ -698,9 +705,95 @@ RETURN: Return PuntoComa
 ;
 
 /* =============== FUNCIONES NATIVAS =============== */
-FPRINT: Print ParentesisApertura EXPRESION ParentesisCierre PuntoComa
+PRINT: Print ParentesisApertura EXPRESION ParentesisCierre PuntoComa
     {
-        nodo = new Node("FPRINT", "FPRINT");
+        nodo = new Node("PRINT", "PRINT");
+        nodo.add($3.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+;
+
+CASTEO: ParentesisApertura TIPO ParentesisCierre EXPRESION 
+    { 
+        nodo = new Node("CASTEO", "CASTEO");
+        nodo.add($2.nodo, $4.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+;
+
+TOLOWERUPPER: ToLower ParentesisApertura EXPRESION ParentesisCierre
+    {
+        nodo = new Node("TOLOWER", "TOLOWER");
+        nodo.add($3.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+    | ToUpper ParentesisApertura EXPRESION ParentesisCierre
+    {
+        nodo = new Node("TOUPPER", "TOUPPER");
+        nodo.add($3.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+;
+
+LENGTH: Length ParentesisApertura EXPRESION ParentesisCierre
+    {
+        nodo = new Node("LENGTH", "LENGTH");
+        nodo.add($3.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+;
+
+TRUNCATE: Truncate ParentesisApertura EXPRESION ParentesisCierre
+    {
+        nodo = new Node("TRUNCATE", "TRUNCATE");
+        nodo.add($3.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+;
+
+ROUND: Round ParentesisApertura EXPRESION ParentesisCierre
+    {
+        nodo = new Node("ROUND", "ROUND");
+        nodo.add($3.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+;
+
+TYPEOF: Typeof ParentesisApertura EXPRESION ParentesisCierre
+    {
+        nodo = new Node("TYPEOF", "TYPEOF");
+        nodo.add($3.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+;
+
+TOSTRING: ToString ParentesisApertura EXPRESION ParentesisCierre
+    {
+        nodo = new Node("TOSTRING", "TOSTRING");
         nodo.add($3.nodo);
         respuesta = {
             nodo: nodo
@@ -913,6 +1006,70 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre
             nodo: nodo
         }
         $$ = respuesta;
+    }
+
+    | CASTEO 
+    { 
+        nodo = new Node("EXPRESION", "EXPRESION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
+    }
+    | TOLOWERUPPER 
+    { 
+        nodo = new Node("EXPRESION", "EXPRESION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
+    }
+    | TOSTRING 
+    { 
+        nodo = new Node("EXPRESION", "EXPRESION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
+    }
+    | LENGTH 
+    { 
+        nodo = new Node("EXPRESION", "EXPRESION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
+    }
+    | TRUNCATE 
+    { 
+        nodo = new Node("EXPRESION", "EXPRESION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
+    }
+    | ROUND 
+    { 
+        nodo = new Node("EXPRESION", "EXPRESION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
+    }
+    | TYPEOF 
+    { 
+        nodo = new Node("EXPRESION", "EXPRESION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
     }
 
     | Id 
