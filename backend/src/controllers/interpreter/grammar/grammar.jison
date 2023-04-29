@@ -76,6 +76,13 @@
 "return"            return "Return";
 //funciones nativas
 "print"             return "Print";
+"toString"          return "ToString";
+"toLower"           return "ToLower";
+"toUpper"           return "ToUpper";
+"length"            return "Length";
+"truncate"          return "Truncate";
+"round"             return "Round";
+"typeof"            return "Typeof";
 "main"              return "Main";
 
 /* =============== EXPRESIONES REGULARES =============== */
@@ -128,6 +135,13 @@
     const { FunctionCall } = require('../expressions/FunctionCall');
     const { InsReturn } = require('../instructions/InsReturn');
     const { Error, ListaErrores } = require('../reports/Error');
+    const { Cast } = require('../expressions/Cast');
+    const { ToString } = require('../expressions/ToString');
+    const { ToLowerUpper } = require('../expressions/ToLowerUpper');
+    const { Length } = require('../expressions/Length');
+    const { Truncate } = require('../expressions/Truncate');
+    const { Round } = require('../expressions/Round');
+    const { Typeof } = require('../expressions/Typeof');
     const { Main } = require('../instructions/Main')
     // const { ListaErrores } = require('../reports/ListaErrores')
 %}
@@ -219,7 +233,7 @@ INSTRUCCION: DECLARACIONVARIABLE
     {
         $$ = $1;
     }
-    | FPRINT
+    | PRINT
     {
         $$ = $1;
     }
@@ -415,9 +429,55 @@ RETURN: Return PuntoComa
 ;
 
 /* =============== FUNCIONES NATIVAS =============== */
-FPRINT: Print ParentesisApertura EXPRESION ParentesisCierre PuntoComa
+PRINT: Print ParentesisApertura EXPRESION ParentesisCierre PuntoComa
     {
         $$ = new Print(@1.first_line, @1.first_column + 1, $3);
+    }
+;
+
+CASTEO: ParentesisApertura TIPO ParentesisCierre EXPRESION 
+    { 
+        $$ = new Cast(@1.first_line, @1.first_column+1, $2, $4);
+    }
+;
+
+TOLOWERUPPER: ToLower ParentesisApertura EXPRESION ParentesisCierre
+    {
+        $$ = new ToLowerUpper(@1.first_line, @1.first_column+1, $3, 0);
+    }
+    | ToUpper ParentesisApertura EXPRESION ParentesisCierre
+    {
+        $$ = new ToLowerUpper(@1.first_line, @1.first_column+1, $3, 1);
+    }
+;
+
+LENGTH: Length ParentesisApertura EXPRESION ParentesisCierre
+    {
+        $$ = new Length(@1.first_line, @1.first_column+1, $3);
+    }
+;
+
+TRUNCATE: Truncate ParentesisApertura EXPRESION ParentesisCierre
+    {
+        $$ = new Truncate(@1.first_line, @1.first_column+1, $3);
+    }
+;
+
+ROUND: Round ParentesisApertura EXPRESION ParentesisCierre
+    {
+        $$ = new Round(@1.first_line, @1.first_column+1, $3);
+    }
+;
+
+TYPEOF: Typeof ParentesisApertura EXPRESION ParentesisCierre
+    {
+        $$ = new Typeof(@1.first_line, @1.first_column+1, $3);
+    }
+;
+
+TOSTRING: ToString ParentesisApertura EXPRESION ParentesisCierre
+    {
+        $$ = new ToString(@1.first_line, @1.first_column+1, $3);
     }
 ;
 
@@ -453,6 +513,14 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre { $$ = $2; }
 
     | Id ParentesisApertura ParentesisCierre { $$ = new FunctionCall(@1.first_line, @1.first_column+1, $1, []); }
     | Id ParentesisApertura ARGUMENTOS ParentesisCierre { $$ = new FunctionCall(@1.first_line, @1.first_column+1, $1, $3); }
+
+    | CASTEO { $$ = $1; }
+    | TOLOWERUPPER { $$ = $1; }
+    | TOSTRING { $$ = $1; }
+    | LENGTH { $$ = $1; }
+    | TRUNCATE { $$ = $1; }
+    | ROUND { $$ = $1; }
+    | TYPEOF { $$ = $1; }
 
     | Id { $$ = new Access(@1.first_line, @1.first_column+1, $1); }
     | Entero {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.INT);}
