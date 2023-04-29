@@ -142,7 +142,8 @@
     const { Truncate } = require('../expressions/Truncate');
     const { Round } = require('../expressions/Round');
     const { Typeof } = require('../expressions/Typeof');
-    const { Main } = require('../instructions/Main')
+    const { Ternary } = require('../expressions/Ternary');
+    const { Main } = require('../instructions/Main');
     // const { ListaErrores } = require('../reports/ListaErrores')
 %}
 
@@ -487,6 +488,13 @@ MAIN: Main LLAMADAFUNCION
     }
 ;
 
+/* =============== OPERADOR TERNARIO =============== */
+TERNARIO: EXPRESION Ternario EXPRESION DosPuntos EXPRESION
+    {
+        $$ = new Ternary(@1.first_line+1, @1.first_column, $1, $3, $5);
+    }
+;
+
 /* =============== EXPRESION =============== */
 EXPRESION: ParentesisApertura EXPRESION ParentesisCierre { $$ = $2; }
     | EXPRESION Suma EXPRESION {$$ = new ArithmeticOperation(@1.first_line, @1.first_column+1, $1, $3, ArithmeticOperator.SUMA); }
@@ -521,6 +529,8 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre { $$ = $2; }
     | TRUNCATE { $$ = $1; }
     | ROUND { $$ = $1; }
     | TYPEOF { $$ = $1; }
+
+    | TERNARIO { $$ = $1; }
 
     | Id { $$ = new Access(@1.first_line, @1.first_column+1, $1); }
     | Entero {$$ = new Primitive(@1.first_line, @1.first_column + 1, $1, Type.INT);}
