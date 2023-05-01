@@ -13,7 +13,14 @@ export class Length extends Expression{
 
     public execute(env: Environment): Return {
         const expresion = this.expression.execute(env);
+        //Si es un vector
+        if (expresion.value instanceof Object) {
+            return{ value:expresion.value.values.length, type:Type.INT}
+        }
+        //Si es una variable
         if (expresion.type === Type.STRING) {
+            console.log('variable')
+
             return { value:expresion.value.length, type:Type.INT }
         }
         return { value:null, type:Type.NULL }

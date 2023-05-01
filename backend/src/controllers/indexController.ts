@@ -11,6 +11,7 @@ import { TablaSimbolos, TSymbol } from "./interpreter/reports/TablaSimbolos";
 import { writeFile } from "fs/promises";
 import { exec } from "child_process";
 import open, {openApp, apps} from 'open';
+import { VectorDeclaration } from "./interpreter/instructions/VectorDeclaration";
 
 let codigoDot:string = "";
 
@@ -42,6 +43,8 @@ class IndexCrontroller {
                 if (inst instanceof MethodFunction) {
                     inst.execute(globalEnvironment);
                 }else if (inst instanceof VariableDeclaration) {
+                    inst.execute(globalEnvironment);
+                }else if (inst instanceof VectorDeclaration) {
                     inst.execute(globalEnvironment);
                 }
             }

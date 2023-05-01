@@ -84,6 +84,7 @@
 "truncate"          return "Truncate";
 "round"             return "Round";
 "typeof"            return "Typeof";
+"new"               return "New";
 "main"              return "Main";
 
 /* =============== EXPRESIONES REGULARES =============== */
@@ -145,6 +146,9 @@
     const { Typeof } = require('../expressions/Typeof');
     const { Ternary } = require('../expressions/Ternary');
     const { Continue } = require('../instructions/Continue');
+    const { VectorDeclaration } = require('../instructions/VectorDeclaration');
+    const { AccessVector } = require('../expressions/AccessVector');
+    const { AssignmentVector } = require('../instructions/AssignmentVector');
     const { Main } = require('../instructions/Main');
     // const { ListaErrores } = require('../reports/ListaErrores')
 %}
@@ -197,6 +201,14 @@ INSTRUCCION: DECLARACIONVARIABLE
         $$ = $1;
     }
     | DECREMENTARVARIABLE
+    {
+        $$ = $1;
+    }
+    | DECLARACIONVECTOR
+    {
+        $$ = $1;
+    }
+    | ASIGNACIONVECTOR
     {
         $$ = $1;
     }
@@ -282,6 +294,34 @@ INCREMENTARVARIABLE: Id Incremento PuntoComa
 DECREMENTARVARIABLE: Id Decremento PuntoComa
     {
         $$ = new IncrementDecrement(@1.first_line, @1.first_column+1, $1, $2);
+    }
+;
+
+/* =============== VECTORES =============== */
+DECLARACIONVECTOR: TIPO CorcheteApertura CorcheteCierre Id Asignacion LlaveApertura LISTAVALORES LlaveCierre PuntoComa
+    {
+        $$ = new VectorDeclaration(@1.first_line, @1.first_column+1, $1, $4, null, $7, 1);
+    }
+    | TIPO CorcheteApertura CorcheteCierre Id Asignacion New TIPO CorcheteApertura EXPRESION CorcheteCierre PuntoComa
+    {
+        $$ = new VectorDeclaration(@1.first_line, @1.first_column+1, $1, $4, $7, [$9], 2);
+    }
+;
+
+LISTAVALORES: LISTAVALORES Coma EXPRESION
+    {
+        $1.push($3);
+        $$ = $1;
+    }
+    | EXPRESION
+    {
+        $$ = [$1];
+    }
+;
+
+ASIGNACIONVECTOR: Id CorcheteApertura EXPRESION CorcheteCierre Asignacion EXPRESION PuntoComa
+    {
+        $$ = new AssignmentVector(@1.first_line, @1.first_column+1, $1, $3, $6);
     }
 ;
 
@@ -533,6 +573,7 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre { $$ = $2; }
 
     | Id ParentesisApertura ParentesisCierre { $$ = new FunctionCall(@1.first_line, @1.first_column+1, $1, []); }
     | Id ParentesisApertura ARGUMENTOS ParentesisCierre { $$ = new FunctionCall(@1.first_line, @1.first_column+1, $1, $3); }
+    | Id CorcheteApertura EXPRESION CorcheteCierre { $$ = new AccessVector(@1.first_line, @1.first_column+1, $1, $3); }
 
     | CASTEO { $$ = $1; }
     | TOLOWERUPPER { $$ = $1; }
