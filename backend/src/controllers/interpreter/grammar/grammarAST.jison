@@ -497,6 +497,18 @@ ASIGNACIONVECTOR: Id CorcheteApertura EXPRESION CorcheteCierre Asignacion EXPRES
     }
 ;
 
+ACCESOVECTOR: Id CorcheteApertura EXPRESION CorcheteCierre 
+    { 
+        nodo = new Node("ACCESO VECTOR", "ACCESO VECTOR");
+        nodo.add(new Node("ID", $1), $3.nodo);
+        respuesta = {
+            nodo:nodo
+        }
+        $$ = respuesta; 
+    }
+;
+
+
 /* =============== LISTAS =============== */
 DECLARACIONLISTA: List Menor TIPO Mayor Id Asignacion New List Menor TIPO Mayor PuntoComa
     {
@@ -1184,14 +1196,14 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre
         }
         $$ = respuesta;
     }
-    | Id CorcheteApertura EXPRESION CorcheteCierre
+    | ACCESOVECTOR
     {
         nodo = new Node("EXPRESION", "EXPRESION");
-        nodo.add(new Node("ID", $1), $3.nodo); 
+        nodo.add($1.nodo); 
         respuesta = {
             nodo:nodo
         }
-        $$ = respuesta;
+        $$ = respuesta;  
     }
     | ACCESOLISTA 
     {

@@ -341,6 +341,12 @@ ASIGNACIONVECTOR: Id CorcheteApertura EXPRESION CorcheteCierre Asignacion EXPRES
     }
 ;
 
+ACCESOVECTOR: Id CorcheteApertura EXPRESION CorcheteCierre 
+    { 
+        $$ = new AccessStruct(@1.first_line, @1.first_column+1, $1, $3); 
+    }
+;
+
 /* =============== LISTAS =============== */
 DECLARACIONLISTA: List Menor TIPO Mayor Id Asignacion New List Menor TIPO Mayor PuntoComa
     {
@@ -614,7 +620,7 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre { $$ = $2; }
 
     | Id ParentesisApertura ParentesisCierre { $$ = new FunctionCall(@1.first_line, @1.first_column+1, $1, []); }
     | Id ParentesisApertura ARGUMENTOS ParentesisCierre { $$ = new FunctionCall(@1.first_line, @1.first_column+1, $1, $3); }
-    | Id CorcheteApertura EXPRESION CorcheteCierre { $$ = new AccessStruct(@1.first_line, @1.first_column+1, $1, $3); }
+    | ACCESOVECTOR { $$ = $1; }
     | ACCESOLISTA { $$ = $1; }
 
     | CASTEO { $$ = $1; }
