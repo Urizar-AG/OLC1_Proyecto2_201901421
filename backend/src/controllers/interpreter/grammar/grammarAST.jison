@@ -84,6 +84,7 @@
 "truncate"          return "Truncate";
 "round"             return "Round";
 "typeof"            return "Typeof";
+"new"               return "New";
 "main"              return "Main";
 
 /* =============== EXPRESIONES REGULARES =============== */
@@ -226,6 +227,24 @@ INSTRUCCION: DECLARACIONVARIABLE
             nodo: nodo
         }
         $$ = respuesta; 
+    }
+    | DECLARACIONVECTOR
+    {
+        nodo = new Node("INSTRUCCION", "INSTRUCCION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;     
+    }
+    | ASIGNACIONVECTOR
+    {
+        nodo = new Node("INSTRUCCION", "INSTRUCCION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;     
     }
     | DECLARACIONFUNCION
     {
@@ -394,6 +413,58 @@ DECREMENTARVARIABLE: Id Decremento PuntoComa
             nodo: nodo
         }
         $$ = respuesta; 
+    }
+;
+
+/* =============== VECTORES =============== */
+DECLARACIONVECTOR: TIPO CorcheteApertura CorcheteCierre Id Asignacion LlaveApertura LISTAVALORES LlaveCierre PuntoComa
+    {
+        nodo = new Node("DECLARACION VECTOR", "DECLARACION VECTOR");
+        nodo.add($1.nodo, new Node("ID", $4), $7.nodo);
+        respuesta = {
+            nodo:nodo
+        }
+        $$ = respuesta;
+    }
+    | TIPO CorcheteApertura CorcheteCierre Id Asignacion New TIPO CorcheteApertura EXPRESION CorcheteCierre PuntoComa
+    {
+        nodo = new Node("DECLARACION VECTOR", "DECLARACION VECTOR");
+        nodo.add($1.nodo, new Node("ID", $4), $7.nodo, $9.nodo);
+        respuesta = {
+            nodo:nodo
+        }
+        $$ = respuesta;
+    }
+;
+
+LISTAVALORES: LISTAVALORES Coma EXPRESION
+    {
+        nodo = $1.nodo;
+        nodo.add($3.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta;
+    }
+    | EXPRESION
+    {
+        nodo = new Node("LISTAVALORES", "LISTAVALORES");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
+    }
+;
+
+ASIGNACIONVECTOR: Id CorcheteApertura EXPRESION CorcheteCierre Asignacion EXPRESION PuntoComa
+    {
+        nodo = new Node("ASIGNACION VECTOR", "ASIGNACION VECTOR");
+        nodo.add(new Node("ID", $1), $3.nodo, $6.nodo);
+        respuesta = {
+            nodo:nodo
+        }
+        $$ = respuesta;
     }
 ;
 
@@ -1036,6 +1107,15 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre
         nodo.add(new Node("ID", $1), $3.nodo);
         respuesta = {
             nodo: nodo
+        }
+        $$ = respuesta;
+    }
+    | Id CorcheteApertura EXPRESION CorcheteCierre
+    {
+        nodo = new Node("EXPRESION", "EXPRESION");
+        nodo.add(new Node("ID", $1), $3.nodo); 
+        respuesta = {
+            nodo:nodo
         }
         $$ = respuesta;
     }
