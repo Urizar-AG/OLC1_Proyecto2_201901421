@@ -4,9 +4,9 @@ import { Return, Type } from "../abstract/Return";
 import { Symbol } from "../abstract/Symbol";
 
 
-//Clase para manejar el acceso a un vector
-export class AccessVector extends Expression {
-    private id:string; //Id del vector
+//Clase para manejar el acceso a un vector o a una lista
+export class AccessStruct extends Expression {
+    private id:string; //Id del vector o lista
     private index:Expression; //Índice de la posición a la que se quiere acceder
 
     constructor(line:number, column:number, id:string, index:Expression) {

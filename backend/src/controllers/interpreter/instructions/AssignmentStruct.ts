@@ -4,10 +4,10 @@ import { Instruction } from "../abstract/Instruction";
 import { Type } from "../abstract/Return";
 import { Symbol } from "../abstract/Symbol";
 
-//Clase para manejar la asignación de valores en los vectores
-export class AssignmentVector extends Instruction {
-    private id:string; //Id del vector al que se quiere acceder
-    private index:Expression; //Posición del vector a la que se quiere acceder
+//Clase para manejar la asignación de valores en los vectores o en las listas
+export class AssignmentStruct extends Instruction {
+    private id:string; //Id del vector o lista al que se quiere acceder
+    private index:Expression; //Posición del vector o lista a la que se quiere acceder
     private value:Expression; //Valor a asignar en la posición
 
     constructor(line:number, column:number, id:string, index:Expression, value:Expression) {

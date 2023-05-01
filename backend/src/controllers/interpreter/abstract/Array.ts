@@ -15,4 +15,9 @@ export class Array {
     public setAttribute(index:number, value:Symbol) {
         this.values[index] = value;
     }
+
+    //Método de añadir para cuando el array se utiliza para una lista
+    public pushAttribute(value:Symbol) {
+        this.values.push(value);
+    }
 }

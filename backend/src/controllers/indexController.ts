@@ -4,6 +4,8 @@ import { MethodFunction } from "./interpreter/instructions/FunctionDeclaration";
 import { PrintList } from "./interpreter/reports/PrintList";
 import { ListaErrores } from "./interpreter/reports/Error";
 import { VariableDeclaration } from "./interpreter/instructions/VariableDeclaration";
+import { VectorDeclaration } from "./interpreter/instructions/VectorDeclaration";
+import { ListDeclaration } from "./interpreter/instructions/ListDeclaration";
 import { Main } from "./interpreter/instructions/Main";
 import { Graficador} from "./interpreter/reports/Graficador";
 import { TablaSimbolos, TSymbol } from "./interpreter/reports/TablaSimbolos";
@@ -11,7 +13,6 @@ import { TablaSimbolos, TSymbol } from "./interpreter/reports/TablaSimbolos";
 import { writeFile } from "fs/promises";
 import { exec } from "child_process";
 import open, {openApp, apps} from 'open';
-import { VectorDeclaration } from "./interpreter/instructions/VectorDeclaration";
 
 let codigoDot:string = "";
 
@@ -46,6 +47,8 @@ class IndexCrontroller {
                     inst.execute(globalEnvironment);
                 }else if (inst instanceof VectorDeclaration) {
                     inst.execute(globalEnvironment);
+                }else if (inst instanceof ListDeclaration) {
+                    inst.execute(globalEnvironment)
                 }
             }
 
