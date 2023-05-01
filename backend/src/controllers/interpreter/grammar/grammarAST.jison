@@ -85,6 +85,8 @@
 "round"             return "Round";
 "typeof"            return "Typeof";
 "new"               return "New";
+"list"              return "List";
+"add"               return "Add";
 "main"              return "Main";
 
 /* =============== EXPRESIONES REGULARES =============== */
@@ -245,6 +247,33 @@ INSTRUCCION: DECLARACIONVARIABLE
             nodo: nodo
         }
         $$ = respuesta;     
+    }
+    | DECLARACIONLISTA
+    {
+        nodo = new Node("INSTRUCCION", "INSTRUCCION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
+    }
+    | AGREGARLISTA
+    {
+        nodo = new Node("INSTRUCCION", "INSTRUCCION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
+    }
+    | ASIGNACIONLISTA
+    {
+        nodo = new Node("INSTRUCCION", "INSTRUCCION");
+        nodo.add($1.nodo);
+        respuesta = {
+            nodo: nodo
+        }
+        $$ = respuesta; 
     }
     | DECLARACIONFUNCION
     {
@@ -465,6 +494,51 @@ ASIGNACIONVECTOR: Id CorcheteApertura EXPRESION CorcheteCierre Asignacion EXPRES
             nodo:nodo
         }
         $$ = respuesta;
+    }
+;
+
+/* =============== LISTAS =============== */
+DECLARACIONLISTA: List Menor TIPO Mayor Id Asignacion New List Menor TIPO Mayor PuntoComa
+    {
+        nodo = new Node("DECLARACION LISTA", "DECLARACION LISTA");
+        nodo.add($3.nodo, new Node("ID", $5), $10.nodo);
+        respuesta = {
+            nodo:nodo
+        }
+        $$ = respuesta;      
+    }
+;
+
+AGREGARLISTA: Id Punto Add ParentesisApertura EXPRESION ParentesisCierre PuntoComa
+    {
+        nodo = new Node("AGREGAR LISTA", "AGREGAR LISTA");
+        nodo.add(new Node("ID", $1), $5.nodo);
+        respuesta = {
+            nodo:nodo
+        }
+        $$ = respuesta;  
+    }
+;
+
+ASIGNACIONLISTA: Id CorcheteApertura CorcheteApertura EXPRESION CorcheteCierre CorcheteCierre Asignacion EXPRESION PuntoComa
+    {
+        nodo = new Node("ASIGNACION LISTA", "ASIGNACION LISTA");
+        nodo.add(new Node("ID", $1), $4.nodo, $8.nodo);
+        respuesta = {
+            nodo:nodo
+        }
+        $$ = respuesta;  
+    }
+;
+
+ACCESOLISTA: Id CorcheteApertura CorcheteApertura EXPRESION CorcheteCierre CorcheteCierre 
+    { 
+        nodo = new Node("ACCESO LISTA", "ACCESO LISTA");
+        nodo.add(new Node("ID", $1), $4.nodo);
+        respuesta = {
+            nodo:nodo
+        }
+        $$ = respuesta; 
     }
 ;
 
@@ -1118,6 +1192,15 @@ EXPRESION: ParentesisApertura EXPRESION ParentesisCierre
             nodo:nodo
         }
         $$ = respuesta;
+    }
+    | ACCESOLISTA 
+    {
+        nodo = new Node("EXPRESION", "EXPRESION");
+        nodo.add($1.nodo); 
+        respuesta = {
+            nodo:nodo
+        }
+        $$ = respuesta;        
     }
 
     | CASTEO 
